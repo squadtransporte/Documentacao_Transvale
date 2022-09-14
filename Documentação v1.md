@@ -1,10 +1,3 @@
-# Documentação v1
-
-Data criação: September 12, 2022 2:56 PM
-Data última alteração: September 14, 2022 9:47 AM
-Status: Em progresso 🙌
-Type: Especificação técnica
-
 # Histórico de versões
 
 | Versão | Modificado por | Alterações |
