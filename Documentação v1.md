@@ -1,10 +1,3 @@
-# Documentação v1
-
-Data criação: September 12, 2022 2:56 PM
-Data última alteração: September 14, 2022 9:47 AM
-Status: Em progresso 🙌
-Type: Especificação técnica
-
 # Histórico de versões
 
 | Versão | Modificado por | Alterações |
@@ -13,13 +6,44 @@ Type: Especificação técnica
 
 # Sumário
 
+[Obter ordens de coleta](#obter-ordens-de-coleta)
+[Finalizar a emissão de um carregamento](#finalizar-a-emissão-de-um-carregamento)
+[Consultar ordem de coleta](#consultar-ordem-de-coleta)
+[Listar operadoras de Carta Frete Eletrônica](#listar-operadoras-de-carta-frete-eletrônica)
+[Obter tipos de documento disponíveis para impressão](#obter-tipos-de-documento-disponíveis-para-impressão)
+[Imprimir Documentos](#imprimir-documentos)
+[Efetuar cancelamento de CT-e](#efetuar-cancelamento-de-ct-e)
+[Obter motivos de cancelamento](#obter-motivos-de-cancelamento)
+[Consultar nota fiscal](#consultar-nota-fiscal)
+[Consultar cancelamento de CT-e](#consultar-cancelamento-de-ct-e)
+[Listar operadoras de VP-e disponíveis](#listar-operadoras-de-vp-e-disponíveis)
+[Inserir Ordem de Coleta](#inserir-ordem-de-coleta)
+[Consultar conjunto](#consultar-conjunto)
+[Cadastro de conjunto](#cadastro-de-conjunto)
+[Consultar CT-e](#consultar-ct-e)
+
+
 # Visão geral
 
-## /getListaOrdemColeta
+Esta API foi criada para facilitar a comunicação entre o Centro de ManifestoCompartilhado da Transvale e o Maxys.
+
+Será disponibilizado dois ambientes:
+
+**Homologação**: [http://177.124.178.167:5056/integrador-transvale](http://177.124.178.167:5056/integrador-transvale)
+
+**Produção**: [http://177.124.178.167:5055/integrador-transvale](http://177.124.178.167:5055/integrador-transvale)
+
+## Autenticação
+
+A autenticação é feita através do método basic, o usuário e senha deve ser solicitado ao TI da Transvale.
+
+## Obter ordens de coleta
+
+Este método lista todas as ordens de coleta emitidas com informações para visualização. Oferece a mesma visão do TAF107 no Maxys.
 
 **Método:** GET
 
-**Rota:** /…/getListaOrdemColeta
+**Rota:** /OrdemColeta/getListaOrdemColeta
 
 ### Relação de campos - Request
 
@@ -34,6 +58,7 @@ Type: Especificação técnica
 | Principal | cpfCnpjCliforPagador | N | String (18) | CPF/CNPJ do Clifor Pagador |
 | Principal | numeroOrdemColeta | N | Number (8) | Número da Ordem de Coleta |
 | Principal | numeroPlacaCavalo | N | String (15) | Placa do Cavalo |
+| Principal | empresaContrato | N | Number (4) | Código da empresa do Contrato |
 | Principal | numeroContrato | N | Number (8) | Número do Contrato |
 | Principal | numeroVarianteContrato | N | Number (4) | Número de variante do Contrato |
 | Principal | statusProcessamento | N | String (1) | Status de processamento da Ordem de Coleta |
@@ -67,7 +92,9 @@ Obs: Ao menos um dos filtros deve ser informado.
     "cpfCnpjCliforPagador": "383.573.010-02",
     "numeroOrdemColeta": 15995123,
     "placaCavalo": "TES1A34",
+	  "empresaContrato": 5,
     "numeroVarianteContrato": 2,
+		"numeroContrato": 1234,
     "statusProcessamento": "A",
     "dataInicioEmissaoCte": "01/09/2022",
     "dataFimEmissaoCte": "12/09/2022"
@@ -81,6 +108,7 @@ Obs: Ao menos um dos filtros deve ser informado.
 | Principal | codigoEmpresa | Number (4) | Código da Empresa emissora |
 | Principal | numeroOrdemColeta | Number (8) | Número da Ordem de Coleta |
 | Principal | dataAgendamentoOC | Date | Data de agendamento da Ordem de Coleta |
+| Principal | empresaContrato | Number(4) | Código da empresa do Contrato |
 | Principal | numeroContrato | Number (8) | Número do Contrato |
 | Principal | numeroVarianteContrato | Number (4) | Número de variante do Contrato |
 | Principal | codigoCliforPagador | Number (8) | Código do Clifor Pagador |
@@ -96,7 +124,7 @@ Obs: Ao menos um dos filtros deve ser informado.
 | Principal | descNaturezaCarga | String (60) | Descrição da Natureza da Carga |
 | Principal | dataInicioProcessamento | Date (”DD/MM/YYYY hh24:mi:ss”) | Data de início do processamento |
 | Principal | dataFimProcessamento | Date (”DD/MM/YYYY hh24:mi:ss”) | Data de fim do processamento |
-| Principal | numeroTotalNotas | Number (30) | Número total de notas vinculadas à OC  |
+| Principal | numeroTotalNotas | Number (30) | Número total de notas vinculadas à OC (via match ou manualmente) |
 | Principal | pesoTotalNotas  | Number (15,3) | Peso total das notas vinculadas à OC |
 | Principal | valorTotalNotas  | Number (15,3) | Valor total das notas vinculadas à OC |
 | Principal | mensagemProcessamento  | String (4000) | Mensagem de processamento |
@@ -139,15 +167,17 @@ Obs: Ao menos um dos filtros deve ser informado.
 | Código | Descrição |
 | --- | --- |
 | 404 | Não foram encontradas ordens de coleta para os filtros informados. |
-| 500 | Erro interno do servidor. |
+| 500 | Erro interno do servidor. Verificar a tag message |
 
 ---
 
-## /finalizaEmissao
+## Finalizar a emissão de um carregamento
+
+Este método insere a ordem de coleta na fila para emissão. A partir desse momento é iniciado a emissão de todos os documentos necessários para o carregamento (CT-e, MDF-e, CF-e, VP-e e averbação)
 
 **Método:** POST
 
-**Rota:** /…/finalizaEmissao
+**Rota:** /OrdemColeta/finalizaEmissao
 
 ### Relação de campos - Request
 
@@ -155,15 +185,15 @@ Obs: Ao menos um dos filtros deve ser informado.
 | --- | --- | --- | --- | --- |
 | Principal | numeroOrdemColeta | S | Number (8) | Número da ordem de coleta do Maxys a ser finalizada |
 | Principal | CPFUsuario | S | String (14) | Usuário que está finalizando a emissão da documentação |
-| Principal | numeroAverbacao | N | String (40) | Número da averbação do CT-e |
+| Principal | numeroAverbacao | N | String (40) | Número da averbação do CT-e. Caso não seja informado será utilizado o número obtivo via integração com a AT&M |
 | Principal | tipoServico | N | Number (2) | Tipo de serviço (TABELA 01) |
 | Principal | chaveCTeMultimodal | N | String (60) | Chave de acesso do CT-e multimodal |
-| Principal | indicadorNegociacao | N | Number (1) | Indicador de negociação (0 - Sim / 1 - Não) |
-| Principal | Notas | S | Array | Nota para a finalização do CT-e |
+| Principal | indicadorNegociacao | N | Number (1) | Indicador de negociação do CT-e multimodal(0 - Não negociável / 1 - Negociável). Obrigatório quando CT-e multimodal. |
+| Principal | Notas | S | Array | Notas de mercadoria para emissão do CT-e |
 |  |  |  |  |  |
 | Notas  | numero | S | Number (15,3) | Número da nota fiscal |
 | Notas | serie | S | String (3) | Série da nota fiscal |
-| Notas | chaveAcesso | S | String (60) | Número da chave de acesso da nota fiscal para emissão automática de CT-e |
+| Notas | chaveAcesso | S | String (60) | Número da chave de acesso da nota fiscal |
 | Notas | especie | S | String (5) | Espécie da nota fiscal |
 | Notas | peso | S | Number (15,3) | Peso da nota fiscal |
 | Notas | pesoLiquido | S | Number (15,3) | Peso liquido da nota fiscal |
@@ -260,15 +290,17 @@ Códigos de tipos de status (status)
 | --- | --- |
 | 422 | Validação de dados para finalização da Ordem de Carregamento |
 | 404 | Não foi encontrada nenhuma ordem de carregamento para a finalização |
-| 500 | Finalização de OC para emissão de CT-e/NFS-e |
+| 500 | Erro interno do servidor. Verifique a tag message. |
 
 ---
 
-## /consultar
+## Consultar ordem de coleta
+
+Este método permite a consulta de uma ordem de coleta, retornando informações informações gerais e status da mesma.
 
 **Método:** GET
 
-**Rota:** /…/consultar
+**Rota:** /OrdemColeta/consultar
 
 ### Relação de campos - Request
 
@@ -292,6 +324,8 @@ Códigos de tipos de status (status)
 | Principal | serieCtrc | N | String (5) | Série do CT-e |
 | Principal | numeroCtrc | N | Number (10) | Número do CT-e |
 | Principal | CPFUsuarioContrato | N | String (14) | CPF do usuário de criação contrato |
+
+*É obrigatório informar ao menos um dos filtros
 
 ### Códigos de status (statusFilaEmissao)
 
@@ -344,7 +378,7 @@ Códigos de tipos de status (status)
 | Ordem Carregamento | dataAgendamento | Date | Data do agendamento da Ordem de Coleta |
 | Ordem Carregamento | observacao | String (240) | Observação da Ordem de Coleta |
 | Ordem Carregamento | observacaoCtrc | String (400) | Observação do CT-e |
-| Ordem Carregamento | emiteParcelaAdto | String (1) | Define se será emitida a parcela de adiantamento para o frete |
+| Ordem Carregamento | emiteParcelaAdto | String (1) | Define se será emitida a parcela de adiantamento para o frete (S- sim ou N - Náo) |
 | Ordem Carregamento | exigeInfoAdicPagador | Boolean | Indica se deve obrigar o número do pedido, número loud, termo de transportes e outros |
 | Ordem Carregamento | textoAdicPagador | String (240) | Texto adicional do TAF001 |
 | Ordem Carregamento | informacoesAdicPagador | String (4000) | Informações adicionais exigidas pelo Clifor pagador para emissão do CT-e automático |
@@ -398,7 +432,6 @@ Códigos de tipos de status (status)
 | Juncao | placaCarreta2 | String (15) | Placa da carreta 2 |
 | Juncao | placaCarreta3 | String (15) | Placa da carreta 3 |
 | Juncao | descStatus | String (4000) | Descrição do status da junção |
-| Juncao | observacaoGR | String (4000) | Observação sobre alteração de status da junção |
 | Juncao | emiteCTe | Boolean | Indica se deve emitir CT-e |
 |  |  |  |  |
 | Ordem Carregamento | documentos | Array |  |
@@ -414,7 +447,6 @@ Códigos de tipos de status (status)
 | Gerenciamento Risco | liberacaoRastreamentoExterno | String (15) | Número da liberação da gerenciadora de risco externa |
 | Gerenciamento Risco | codigoGerenciadora | Number (4) | Código da gerenciadora de risco |
 |  |  |  |  |
-| Ordem Carregamento | validaGerenciamentoRisco | Boolean | Indica se realizará a validação do gerenciamento de risco para emissão de CT-e |
 | Ordem Carregamento | valoresTransportador | Object |  |
 |  |  |  |  |
 | Valores Transportador | tarifaTransportador | Number (15,3) | Tarifa do transportador |
@@ -590,21 +622,17 @@ Códigos de tipos de status (status)
 | Código | Descrição |
 | --- | --- |
 | 404 | Não foi encontrada nenhuma Ordem de Coleta com os dados informados |
-| 500 | Falha ao processar sua requisição |
+| 500 | Erro interno do servidor. Verifique a tag message. |
 
 ---
 
-## /getOperadorasCfe
+## Listar operadoras de Carta Frete Eletrônica
+
+Este método retorna as operadoras cadastradas no Maxys e disponíveis para emissão de Carta Frete eletrônica.
 
 **Método:** GET
 
-**Rota:** /…/getOperadorasCfe?filialMaxys={filialMaxys}
-
-### Relação de campos - Request
-
-| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
-| --- | --- | --- | --- | --- |
-| Principal | filialMaxys | S | Number (4) | Código da filial no Maxys |
+**Rota:** /cadastros/getOperadorasCfe
 
 ### Relação de campos - Response
 
@@ -664,15 +692,18 @@ Códigos de tipos de status (status)
 
 | Código | Descrição |
 | --- | --- |
+| 404 | Nenhuma operadora cadastrada |
 | 500 | Erro de execução |
 
 ---
 
-## /getTiposDocumento
+## Obter tipos de documento disponíveis para impressão
+
+Este método recebe os dados de um CT-e e retorna os documentos (PDF) que foram gerados e estão disponíveis para impressão.
 
 **Método:** GET
 
-**Rota:** /…/getTiposDocumento?empresa={empresa}&serie={serie}&lancamento={lancamento}&tipoFaturamento={tipofaturamento}&numero={numero}
+**Rota:** /OrdemColeta/getTiposDocumento?empresa={empresa}&serie={serie}&lancamento={lancamento}&numero={numero}
 
 ### Relação de campos - Request
 
@@ -680,9 +711,8 @@ Códigos de tipos de status (status)
 | --- | --- | --- | --- | --- |
 | Principal | empresa | S | Number (4) | Empresa de emissão do CT-e |
 | Principal | serie | S | String (5) | Código da série do CT-e |
-| Principal | tipoFaturamento | S | String (1) | Tipo de faturamento do CT-e |
 | Principal | lancamento | S | Number (7) | Número do lançamento do CT-e |
-| Principal | numero | S | Number (10) | Número do CT-exemplo de Request |
+| Principal | numero | S | Number (10) | Número do CT-e |
 
 ### Relação de campos - Response
 
@@ -707,15 +737,18 @@ Códigos de tipos de status (status)
 | Código | Descrição |
 | --- | --- |
 | 400 | Requisição inválida |
-| 500 | Erro de execução |
+| 404 | CT-e informado não encontrado |
+| 500 | Erro interno do servidor. Verifique a tag message. |
 
 ---
 
-## /getDocumento
+## Imprimir Documentos
+
+Esse método retorna o documento em PDF.
 
 **Método:** GET
 
-**Rota:** /…/getDocumento?empresa={empresa}&lancamento={lancamento}&serie={serie}&tipoFaturamento={tipoFaturamento]&numero={numero}&tipoDocumento={tipoDocumento}&ordemColeta={ordemColeta}&CPFUsuario={CPFUsuario}
+**Rota:** /Cte/getDocumento?empresa={empresa}&lancamento={lancamento}&serie={serie}&numero={numero}&tipoDocumento={tipoDocumento}&ordemColeta={ordemColeta}&CPFUsuario={CPFUsuario}
 
 ### Relação de campos - Request
 
@@ -723,7 +756,6 @@ Códigos de tipos de status (status)
 | --- | --- | --- | --- | --- |
 | Principal | empresa | S | Number (4) | Código da empresa de emissão do CT-e |
 | Principal | serie | S | String (5) | Código de série do CT-e |
-| Principal | tipoFaturamento | N | String (1) | Tipo de faturamento de CT-e |
 | Principal | lancamento | S | Number (7) | Número do lançamento do CT-e |
 | Principal | numero | S | Number (10) | Número do CT-e |
 | Principal | tipoDocumento | S | Number (2) | Código do Tipo de documento (TABELA 01) |
@@ -747,7 +779,7 @@ Códigos de tipos de status (status)
 
 | Nível | Campo | Tipo de dado | Descrição |
 | --- | --- | --- | --- |
-| Principal | arquivo | Arquivo PDF | Arquivo impresso de acordo com o tipo de documento |
+| Principal | arquivo | Arquivo PDF | Arquivo gerado de acordo com o tipo de documento |
 
 ### Possíveis códigos de erro
 
@@ -758,11 +790,13 @@ Códigos de tipos de status (status)
 
 ---
 
-## /cancelarCTe
+## Efetuar cancelamento de CT-e
+
+Esse método efetua o cancelamento de um CT-e e todos os seus documentos em cascata.
 
 **Método: POST**
 
-**Rota:** /…/cancelarCTe
+**Rota:** /Cte/cancelarCTe
 
 ### Relação de campos - Request
 
@@ -772,7 +806,6 @@ Códigos de tipos de status (status)
 | Principal | codigoFilial | N | Number (4) | Código da empresa do CT-e a ser cancelado |
 | Principal | numeroLancamento | N | Number (7) | Número do lançamento do CT-e a ser cancelado |
 | Principal | serieDocumento | N | String (5) | Série do CT-e a ser cancelado |
-| Principal | tipoFaturamento | N | String (1) | Tipo de faturamento do CT-e cancelado (0 - Entrada / 1 - Saída) |
 | Principal | geraCFAvulsa | N | String (1) | Status para saber se gera carta frete avulsa ou cancela todas as parcelas (TABELA 01) |
 | Principal | CPFUsuarioCancelamento | S | String (14) | CPF do usuário que está efetuando o cancelamento |
 | Principal  | codigoMotivoCancelamento | S | Number (5) | Motivo do cancelamento |
@@ -794,7 +827,6 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
   "codigoFilial": 5,
   "numeroLancamento": 18942,
   "serieDocumento": "3",
-  "tipoFaturamento": "1",
   "geraCFAvulsa": "N",
   "CPFUsuarioCancelamento": "12345678901",
   "codigoMotivoCancelamento": 1
@@ -822,15 +854,17 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 | Código | Descrição |
 | --- | --- |
 | 422 | Não foi possível processar a transação |
-| 500 | Falha ao processar sua requisição |
+| 500 | Erro interno do servidor. Verifique a tag message. |
 
 ---
 
-## /getMotivos
+## Obter motivos de cancelamento
+
+Esse método lista os motivos de cancelamento que podem ser usados para cancelamento dos documentos.
 
 **Método:** GET
 
-**Rota:** /…/getMotivos?codigo={codigo}&descricao={descricao}
+**Rota:** /Cte/getMotivos?codigo={codigo}&descricao={descricao}
 
 ### Relação de campos - Request
 
@@ -849,11 +883,6 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 |  |  |  |  |
 | motivosCancelamento | codigo | Number(5) | Código do motivo de cancelamento |
 | motivosCancelamento | descricao | String (60) | Descrição do motivo de cancelamento |
-|  |  |  |  |
-| Principal | totalDocs | Number  | Número total de motivos de cancelamento |
-| Principal | limit | Number  | Quantidade de registros por página |
-| Principal | page | Number | Página atual |
-| Principal | totalPages | Number | Número total de páginas |
 
 ### Exemplo de Response
 
@@ -866,11 +895,7 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
             "codigo": 1,
             "descricao": "VALOR INCORRETO"
         }
-    ],
-    "totalDocs": 1,
-    "limit": 25,
-    "page": 1,
-    "totalPages": 1
+    ]
 }
 ```
 
@@ -878,57 +903,69 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 
 | Código | Descrição |
 | --- | --- |
-| 500 | Erro no processamento da requisição |
+| 500 | Erro interno do servidor. Verifique a tag message |
 
 ---
 
-## /getNotaCompleta
+## Consultar nota fiscal
+
+Esse método retornas os dados principais de uma nota fiscal, buscando no MaxysXML.
 
 **Método:** GET
 
-**Rota:** /…/getNotaCompleta?numeroChaveAcesso={numeroChaveAcesso}&cliforPagador={cliforPagador}&dataInicio={dataInicio}&cliforOrigem={cliforOrigem}&cliforDestino={cliforDestino}&cliforExpedidor={cliforExpedidor}&cliforRecebedor={cliforRecebedor}&descProduto={descProduto}&numeroNCM={numeroNCM}&dataFim={dataFim}
+**Rota:** /NotaFiscal/getNotaCompleta?numeroChaveAcesso={numeroChaveAcesso}
 
 ### Relação de campos - Request
 
 | Nível | Campo | Obrigatório | Tipo de dado | Descrição |
 | --- | --- | --- | --- | --- |
 | Principal | numeroChaveAcesso | S | String (60) | Número da chave de acesso da nota fiscal |
-| Principal | cliforPagador | S | String (14) | CPF/CNPJ do clifor pagador |
-| Principal | cliforOrigem | N | String (14) | CPF/CNPJ do clifor de origem |
-| Principal | cliforDestino | N | String (14) | CPF/CNPJ do clifor de destino |
-| Principal | cliforExpedidor | N | String (14) | CPF/CNPJ do clifor expedidor |
-| Principal | cliforRecebedor | N | String (14) | CPF/CNPJ do clifor recebedor  |
-| Principal | descProduto | N | String (60) | Descrição do produto |
-| Principal | numeroNCM | N | String (8) | Número do NCM |
-| Principal | dataInicio | S | Date | Data de inicio da nota fiscal |
-| Principal | dataFim | N | Date | Data de fim da nota fiscal |
 
 ### Relação de campos - Response
 
 | Nível | Campo | Tipo de dado | Descrição |
 | --- | --- | --- | --- |
-| Principal | notas | Array | Array de notas fiscais |
-| notas | chaveAcesso | String (60) | Número da chave de acesso da nota fiscal |
-| notas  | XML | Arquivo .XML | Arquivo XML da nota fiscal |
-| Principal | totalDocs | Number | Número total de motivos de cancelamento |
-| Principal | page | Number | Página atual |
-| Principal | totalPages | Number | Número total de páginas |
-| Principal | limit | Number | Quantidade de registros por página |
+| Principal | code | Number (3) | Código de retorno |
+| Principal | message | String (2000) | Mensagem de retorno |
+| Principal | chaveAcesso | String (60) | Número da chave de acesso da nota fiscal |
+| Principal | numero | Number (10) | Número da nota fiscal |
+| Principal | codigoSerie | String (5) | Código de série da nota fiscal |
+| Principal | codigoEspecie | String (5) | Código de espécie da nota fiscal |
+| Principal | dataEmissao | Date | Data da emissão da nota fiscal |
+| Principal | quantidadeVolume | Number (15,3) | Quantidade de volumes |
+| Principal | pesoNotaFiscal | Number (15,3) | Peso da nota fiscal |
+| Principal | valorNotaFiscal | Number (15,3) | Valor da nota fiscal |
+| Principal | valorMercadoria | Number (15,3) | Valor da mercadoria  |
+| Principal | pesoLiquido | Number (15,3) | Peso liquido |
+| Principal | codigoCfo | Number (6) | Código do CFO |
+| Principal | descCfo | String (60) | Descrição do CFO |
+| Principal | valorImpostobcalc | Number (15,3) | Valor da base de cálculo do imposto |
+| Principal | valorImposto | Number (15,3) | Valor do imposto |
+| Principal | valorImpostobcalcsub | Number (15,3) | Valor da base de cálculo do imposto |
+| Principal | valorImpostosubstrib | Number (15,3) | Valor do imposto de substituição tributária |
 
 ### Exemplo de Response
 
 ```json
 {
-    "notas": [
-        {
-            "chaveAcesso": "43200603640719000185570010001793651000000003",
-            "XML": "<arquivoXML>"
-        }
-    ],
-    "totalDocs": 1,
-    "page": 1,
-    "totalPages": 1,
-    "limit": 25
+    "code": 200,
+    "message": "Sucesso",
+    "chaveAcesso": "43200603640719000185570010001793651000000003",
+    "numeroNffornec": 11324,
+    "codigoSeriefornec": 3,
+    "codigoEspecienf": "NF",
+    "dataEmissao": "14/04/2022",
+    "quantidadeVolume": 1,
+    "pesoNotaFiscal": 30000.000,
+    "valorNotaFiscal": 5000.000,
+    "valorMercadoria": 2500.000,
+    "pesoLiquido": 1000.00,
+    "codigoCfo": 1122,
+    "descCfo": "COMPRA P/IND.MERC.REMET.P/FORN.SEM TRANSITAR P/ESTAB.ADQ.A O",
+    "valorImpostobcalc": 125.20,
+    "valorImposto": 125.20,
+    "valorImpostobcalcsub": 125.20,
+    "valorImpostosubstrib": 125.20
 }
 ```
 
@@ -937,15 +974,18 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 | Código | Descrição |
 | --- | --- |
 | 400 | Requisição inválida |
-| 500 | Falha ao processar sua requisição |
+| 404 | Nota fiscal não encontrada |
+| 500 | Erro interno do servidor. Verifique a tag message. |
 
 ---
 
-## /cancelamentoCTe/consultar
+## Consultar cancelamento de CT-e
+
+Esse método permite consultar o status de cancelamento de todos os documentos gerados.
 
 **Método:** GET
 
-**Rota:** /…/cancelamentoCTe/consultar?numeroAgrupamento={numeroAgrupamento}&codigoFilial={codigoFilial}&numeroLancamento={numeroLancamento}&serieDocumento={serieDocumento}&tipoFaturamento{tipoFaturamento}
+**Rota:** /Cte/cancelamentoCTe/consultar?numeroAgrupamento={numeroAgrupamento}&codigoFilial={codigoFilial}&numeroLancamento={numeroLancamento}&serieDocumento={serieDocumento}
 
 ### Relação de campos - Request
 
@@ -955,15 +995,12 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 | Principal | codigoFilial | S | Number (4) | Código da Filial do CT-e |
 | Principal | numeroLancamento | S | Number (7) | Número de Lançamento do CT-e |
 | Principal | serieDocumento | S | String (5) | Série do CT-e |
-| Principal | tipoFaturamento | S | String (1) | Tipo de Faturamento do CT-e |
 
 ### Relação de campos - Response
 
 | Nível | Campo | Tipo de dado | Descrição |
 | --- | --- | --- | --- |
 | Principal | documentos | Array | Array de documentos |
-|  |  |  |  |
-| Documentos | cancelamento | Object | Objeto de cancelamentos |
 |  |  |  |  |
 | Cancelamento | status | String (2000) | Descrição do status da fila de cancelamento  |
 | Cancelamento | mensagemProcessamento | String (2000) | Mensagem de erro no cancelamento |
@@ -1010,71 +1047,59 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 |  |  |  |  |
 | Documentos | NFSe | Object | Objeto referente à NFSe |
 | NFSe | status | String (2000) | Status da NFSe |
-|  |  |  |  |
-| Principal | totalDocs | Number | Número total de CT-e cancelados |
-| Principal | limit | Number | Quantidade de registros por página |
-| Principal | page | Number | Página atual |
-| Principal | totalPages | Number | Número total de páginas |
 
 ### Exemplo de Response
 
 ```json
-{
-    "documentos": [
-        {
-            "cancelamento": {
-                "status": "",
-                "mensagemErroProcessamento": "",
-                "seqFilaProcessamento": null
-            },
-            "documento": {
-                "codigoFilial": 5,
-                "nomeFilial": "Maxicon Sitemas",
-                "numeroLancamento": 15586,
-                "serieDocumento": "1",
-                "tipoFaturamento": 1,
-                "numeroAgrupamento": null,
-                "numeroDocumento": 10423,
-                "dataEmissao": "19/01/2018",
-                "placaCavalo": "JFF0001",
-                "CPFCNPJPagador": "15996351196",
-                "nomePagador": "Fulano de Souza",
-                "CPFMotorista": "23554700063",
-                "nomeMotorsita": "Sicrano da Silva",
-                "status": "Cancelado",
-                "exigeMotivoNFSePrefeitura": false
-            },
-            "pedagio": {
-                "status": "Sem Pedágio Eletrônico"
-            },
-            "cartaFrete": {
-                "status": "Sem Carta Frete Eletrônica"
-            },
-            "financeiro": {
-                "status": "Cancelado"
-            },
-            "CTe": {
-                "status": "Sem CT-e Eletrônico"
-            },
-            "averbacao": {
-                "status": "Sem Averbação"
-            },
-            "microSeguro": {
-                "status": "Não contratado"
-            },
-            "MDFe": {
-                "status": "Sem MDF-e"
-            },
-            "NFSe": {
-                "status": "Sem NFS-e"
-            }
-        }
-    ],
-    "totalPages": 1,
-    "page": 1,
-    "limit": 25,
-    "totalDocs": 1
-}
+
+     {
+          "cancelamento": {
+              "status": "",
+              "mensagemErroProcessamento": "",
+              "seqFilaProcessamento": null
+          },
+          "documento": {
+              "codigoFilial": 5,
+              "nomeFilial": "Maxicon Sitemas",
+              "numeroLancamento": 15586,
+              "serieDocumento": "1",
+              "tipoFaturamento": 1,
+              "numeroAgrupamento": null,
+              "numeroDocumento": 10423,
+              "dataEmissao": "19/01/2018",
+              "placaCavalo": "JFF0001",
+              "CPFCNPJPagador": "15996351196",
+              "nomePagador": "Fulano de Souza",
+              "CPFMotorista": "23554700063",
+              "nomeMotorsita": "Sicrano da Silva",
+              "status": "Cancelado",
+              "exigeMotivoNFSePrefeitura": false
+          },
+          "pedagio": {
+              "status": "Sem Pedágio Eletrônico"
+          },
+          "cartaFrete": {
+              "status": "Sem Carta Frete Eletrônica"
+          },
+          "financeiro": {
+              "status": "Cancelado"
+          },
+          "CTe": {
+              "status": "Sem CT-e Eletrônico"
+          },
+          "averbacao": {
+              "status": "Sem Averbação"
+          },
+          "microSeguro": {
+              "status": "Não contratado"
+          },
+          "MDFe": {
+              "status": "Sem MDF-e"
+          },
+          "NFSe": {
+              "status": "Sem NFS-e"
+          }
+      }
 ```
 
 ### Possíveis códigos de erro
@@ -1086,18 +1111,13 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 
 ---
 
-## /getOperadorasVPE
+## Listar operadoras de VP-e disponíveis
+
+Esse método retorna todas as operadores de Vale Pedágio eletrônico disponíveis para emissão.
 
 **Método: GET**
 
-**Rota:** /…/getOperadorasVPE?filialMaxys={filialMaxys}&pagamentoPegadioAntecipado={pagamentoPegadioAntecipado}
-
-### Relação de campos - Request
-
-| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
-| --- | --- | --- | --- | --- |
-| Principal | pagamentoPedagioAntecipado | S | Boolean | Status se possui pagamento de pedágio antecipado |
-| Principal | filialMaxys | S | Number (4) | Código da filial no Maxys |
+**Rota:** /cadastro/getOperadorasVPE
 
 ### Relação de campos - Response
 
@@ -1128,18 +1148,21 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 
 | Código | Descrição |
 | --- | --- |
+| 404 | Nenhuma operadora de VP-e cadastrada |
 | 422 | Não foi possível processar a transação |
-| 500 | Falha ao processar sua requisição |
+| 500 | Falha ao processar sua requisição. Verifique a tag message. |
 
 ---
 
-## /postOrdemColeta
+## Inserir Ordem de Coleta
+
+Esse método permite o cadastro de uma Ordem de Coleta.
 
 **Método: POST**
 
-**Rota:** /…/postOrdemColeta
+**Rota:** /OrdemColeta/postOrdemColeta
 
-### Relação de campos - Reques
+### Relação de campos - Request
 
 | Nível | Campo | Obrigatório | Tipo de dado | Descrição |
 | --- | --- | --- | --- | --- |
@@ -1210,20 +1233,17 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 | Principal | message | String (2000) | Mensagem de retorno |
 | Principal | filialOrdemColeta | Number (4) | Código da filial do contrato |
 | Principal | numeroOrdemColeta | Number (8) | Número da Ordem de Coleta |
-| Principal | linkGetDocumento | String (200) | Link do documento  |
+| Principal | linkGetDocumento | String (200) | Link do PDF da Ordem de Coleta |
 
 ### Exemplo de Response
 
 ```json
 {
-    "tipoPagamentoPedagio": [
-        {
-            "codPagamento": 7,
-            "descPagamento": "Tag - Target Via Facil",
-            "obrigaNrCartao": false,
-            "urlImagem": ""
-        }
-    ]
+    "code": 200,
+    "message": "Sucesso",
+    "filialOrdemColeta": 1,
+    "numeroOrdemColeta": 4,
+    "linkGetDocumento": "/maxys-webhook/documentoCTe/getDocumento?tipoDocumento=8&empresa=1&ordemColeta=4"
 }
 ```
 
@@ -1231,12 +1251,13 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 
 | Código | Descrição |
 | --- | --- |
-| 422 | Não foi possível processar a transação |
-| 500 | Falha ao processar sua requisição |
+| 500 | Falha ao processar sua requisição. Verifique a mensagem de erro. |
 
 ---
 
-## /getConjunto
+## Consultar conjunto
+
+Esse método permite a consulta de um conjunto a partir da placa do cavalo.
 
 **Método:** GET
 
@@ -1318,98 +1339,348 @@ Obs: é necessário informar ao menos o numero de agrupamento ou a chave do CT-e
 
 ---
 
-## /postConjunto
+## Cadastro de conjunto
+
+Esse método permite o cadastro de um conjunto no Maxys.
 
 **Método: POST**
 
-**Rota:** /…/postConjunto
+**Rota:** /Conjunto/postConjunto
 
 ### Relação de campos - Request
 
 | Nível | Campo | Obrigatório | Tipo de dado | Descrição |
 | --- | --- | --- | --- | --- |
+| Principal | ExternalId | N | Number | Código identificador único da junção no gerenciamento de risco |
+| Principal | Comments | N | String (4000) | Observações da junção |
+| Principal | ProductValue | N | Number | Valor de mercadoria |
+| Principal | Driver | S |  | Seção de dados do motorista |
 |  |  |  |  |  |
+| Driver | Document | S | String (11) | CPF do motorista |
+| Driver | Name | S | String (60) | Nome do motorista |
+| Driver | DateOfBirthday | S | Date | Data de nascimento do motorista |
+| Driver | Document2 | S | String (20) | Número do RG do motorista |
+| Driver | IssueDateDocument2 | S | Date | Data de emissão do RG do motorista |
+| Driver | IssueStateDocument2 | S | String (2) | Unidade Federativa de emissão do RG do motorista |
+| Driver | Document3 | S | String (15) | Número da CNH do motorista |
+| Driver | CategoryDocument3 | S | String (2) | Categoria da CNH do motorista |
+| Driver | DueDateDocument3 | S | Date | Data de vencimento da CNH do motorista |
+| Driver | EmitterDocument3 | S | String (2) | Unidade Federativa de emissão da CNH do motorista |
+| Driver | IssueCityDocument3 | S | Number (7) | Código IBGE do município de emissão da CNH do motorista |
+| Driver | FirstDateDocument3 | S | Date | Data de emissão da primeira CNH do motorista |
+| Driver | FatherName | S | String (60) | Nome do pai do motorista |
+| Driver | MotherName | S | String (60) | Nome da mãe do motorista |
+| Driver | Postcode | S | String (8) | CEP do endereço do motorista |
+| Driver | Address | S | String (60) | Nome da rua do endereço do motorista |
+| Driver | Number | S | String (7) | Número do endereço do motorista |
+| Driver | Complement | N | String (30) | Complemento do endereço do motorista |
+| Driver | County | S | String (100) | Bairro do endereço do motorista |
+| Driver | City | S | Number (7) | Código IBGE do município do endereço do motorista |
+| Driver | Landline | N | String (15) | Número de telefone do motorista |
+| Driver | CommercialLandline | N | String (60) | Número de telefone da referência comercial do motorista |
+| Driver | CommercialContact | N | String (15) | Descrição da referência comercial do motorista |
+| Driver | ReferenceLandline | N | String (60) | Número de telefone da referência pessoal do motorista |
+| Driver | ReferenceContact | N | String (15) | Descrição da referência pessoal do motorista |
+| Driver | DriverProfileCode | N | Number | Código do perfil do motorista (TABELA 02) |
+| Driver | Pis | N | Number | Número do PIS do motorista |
+| Driver | References | N | Array | Vetor com 3 seções de referências para o motorista |
+| Driver.References | Phone | N | String (15) | Número de telefone da referência |
+| Driver.References | Name | N | String (60) | Descrição da referência |
 |  |  |  |  |  |
+| Principal | DeviceRegisters | S | Array | Vetor com as seções de informações dos veículos |
+| DeviceRegisters | Document | S | String (14) | CPF ou CNPJ do proprietário do veículo |
+| DeviceRegisters | Name | S | String (60) | Nome do proprietário do veículo |
+| DeviceRegisters | Postcode | S | String (8) | CEP do endereço do proprietário do veículo |
+| DeviceRegisters | Address | S | String (60) | Nome da rua do endereço do proprietário do veículo |
+| DeviceRegisters | Number | S | String (7) | Número do endereço do proprietário do veículo |
+| DeviceRegisters | Complement | N | String (30) | Complemento do endereço do proprietário do veículo |
+| DeviceRegisters | County | S | String (100) | Bairro do endereço do proprietário do veículo |
+| DeviceRegisters | City | S | Number (7) | Código IBGE do município do endereço do proprietário do veículo |
+| DeviceRegisters | Landline | N | String (15) | Número de telefone do proprietário do veículo |
+| DeviceRegisters | Plate | S | String (15) | Placa do veículo |
+| DeviceRegisters | CityPlate | S | Number (7) | Código IBGE de registro do veículo |
+| DeviceRegisters | Document3 | S | String (12) | Número do Renavam do veícuço |
+| DeviceRegisters | DeviceBrand | S | String (100) | Marca do veículo (enviar código identificador, para relacionamento com DE/PARA) |
+| DeviceRegisters | DeviceModel | S | String (100) | Modelo do veículo (enviar código identificador, para relacionamento com DE/PARA) |
+| DeviceRegisters | DeviceType | S | String (100) | Tipo do veículo (enviar código identificador, para relacionamento com DE/PARA) |
+| DeviceRegisters | Document4 | S | String (30) | Chassis do veículo |
+| DeviceRegisters | Year | S | Number (4) | Ano de fabricação do veículo |
+| DeviceRegisters | Document2 | S | String (20) | Número do RNTRC |
+| DeviceRegisters | NameDocument2 | S | String (60) | Nome do proprietário do RNTRC |
+| DeviceRegisters | DueDocument2 | S | Date | Data de vencimento do RNTRC |
+| DeviceRegisters | Document5 | N | String (14) | CPF ou CNPJ do proprietário do RNTRC, caso diferente do proprietário do veículo |
+| DeviceRegisters | Postcode5 | N | String (8) | CEP do endereço do proprietário do RNTRC, caso diferente do proprietário do veículo |
+| DeviceRegisters | Address5 | N | String (60) | Nome da rua do endereço do proprietário do RNTRC, caso diferente do proprietário do veículo |
+| DeviceRegisters | Number5 | N | String (7) | Número do endereço do proprietário do RNTRC, caso diferente do proprietário do veículo |
+| DeviceRegisters | Complement5 | N | String (30) | Complemento do endereço do proprietário do RNTRC, caso diferente do proprietário do veículo |
+| DeviceRegisters | County5 | N | String (100) | Bairro do endereço do proprietário do RNTRC, caso diferente do proprietário do veículo |
+| DeviceRegisters | City5 | N | Number (7) | Código IBGE do município do endereço do proprietário do RNTRC, caso diferente do proprietário do veículo |
+| DeviceRegisters | Color | N | String | Cor do veículo |
+| DeviceRegisters | Axes | N | Number | Número de eixos do veículo |
+| DeviceRegisters | pisOwner | N | Number | Número do PIS do proprietário do veículo |
+| DeviceRegisters | pisTenant | N | Number | Número do PIS do locatário do veículo |
+| DeviceRegisters | ownerMatchedTAC | N | Boolean | Indica se o proprietário do veículo é TAC/TAC equiparado (Transportador autônomo de cargas) |
+| DeviceRegisters | tenantMatchedTAC | N | Boolean | Indica se o locatário do veículo é TAC/TAC equiparado (Transportador autônomo de cargas) |
+|  |  |  |  |  |
+| Principal | Document | N | Array | Vetor com as seções de documentos anexados |
+| Document | DocumentContent | S | Base 64 | Imagem no formate Base 64 |
+| Document | DocumentType | S | Number | Código do tipo do documento (TABELA 01) |
+| Document | Observation | N | String | Observações do documento |
 
-### Códigos de status
+### TABELA 01 - **Códigos de tipo de documento**
 
 | Código | Descrição |
 | --- | --- |
-|  |  |
-|  |  |
+| 0 | CNH do Motorista |
+| 1 | Comprovante de endereço do motorista |
+| 2 | CRLV do cavalo |
+| 3 | CRLV da carreta 01 |
+| 4 | CRLV da carreta 02 |
+| 5 | CRLV da carreta 03 |
+| 6 | Foto do motorista |
+| 7 | Foto do cavalo |
+| 8 | Foto da carreta 01 |
+| 9 | Foto da carreta 02 |
+| 10 | Foto da carreta 03 |
+| 11 | Foto do chassi do cavalo |
+| 12 | Foto do chassi da carreta 01 |
+| 13 | Foto do chassi da carreta 02 |
+| 14 | Foto do chassi da carreta 03 |
+| 15 | RNTRC do cavalo |
+| 16 | RNTRC da carreta 01 |
+| 17 | RNTRC da carreta 02 |
+| 18 | RNTRC da carreta 03 |
+| 19 | Outros 01 |
+| 20 | Outros 02 |
+| 21 | Outros 03 |
+| 22 | Outros 04 |
+
+### TABELA 02 - **Códigos de perfil de motorista**
+
+| Código | Descrição |
+| --- | --- |
+| 1 | Agregado |
+| 2 | Autônomo |
+| 3 | Frota |
+| 4 | RH |
+| 5 | Terceiro |
 
 ### Exemplo de Request
 
 ```json
-
+{
+  "ExternalId": null,
+  "Driver": {
+    "Document": "52771345579",
+    "Name": "Emanuel Cláudio Silva",
+    "DateOfBirthday": "04/11/1997",
+    "Document2": "425195855",
+    "IssueDateDocument2": "01/02/2015",
+    "IssueStateDocument2": "PR",
+    "Document3": "32425979301",
+    "CategoryDocument3": "E",
+    "DueDateDocument3": "31/12/2023",
+    "IssueCityDocument3": "3169109",
+    "IssueStateDocument3": "MG",
+    "FirstDateDocument3": "31/12/2010",
+    "FatherName": "Melissa Mirella",
+    "MotherName": "Cauã Otávio Silva",
+    "Postcode": "85807090",
+    "Address": "RUA FORTALEZA",
+    "Number": "216",
+    "Complement": "ENDERECO TESTE",
+    "County": "TROPICAL",
+    "City": "4104808",
+    "State": "PR",
+    "Landline": "45989225437",
+    "CommercialLandline": "526686",
+    "CommercialContact": "TESTE",
+    "ReferenceLandline": "526685",
+    "ReferenceContact": "TESTE",
+    "DriverProfileCode": "1",
+    "Pis": "123456789",
+    "References": [
+      {
+        "Phone": "44998049893",
+        "Name": "TESTE1"
+      },
+      {
+        "Phone": "44998049893",
+        "Name": "TESTE 2"
+      },
+      {
+        "Phone": "44998049893",
+        "Name": "TESTE 3"
+      }
+    ]
+  },
+  "DeviceRegisters": [
+    {
+      "Document": "20426272919",
+      "Name": "EDSON LEVI DA CRUZ",
+      "Postcode": "85807090",
+      "Address": "RUA FORTALEZA",
+      "Number": "216",
+      "Complement": "ENDERECO TESTE",
+      "County": "TROPICAL",
+      "City": "4104808",
+      "Landline": "45989225437",
+      "Contact": "EDSON LEVI DA CRUZ",
+      "CommercialLandline": "526685",
+      "Plate": "JYX1812",
+      "CityPlate": "4127700",
+      "Document3": "76367066106",
+      "DeviceBrand": "1",
+      "DeviceModel": "11",
+      "DeviceType": "1",
+      "Document4": "654153495487",
+      "Year": "2009",
+      "Document2": "46546854170",
+      "NameDocument2": "Emanuel Cláudio Silva",
+      "DueDocument2": "31/12/2030",
+      "Document5": "20426272919",
+      "Postcode5": "85807090",
+      "Address5": "RUA FORTALEZA",
+      "Number5": "216",
+      "Complement5": "ENDERECO TESTE",
+      "County5": "TROPICAL",
+      "City5": "4104808",
+      "Color": "Azul",
+      "Axes": "1",
+      "pisOwner": "123456789",
+      "pisTenant": "123456789",
+      "matchedTAC": true
+    }
+  ],
+  "Comments": "TESTE DE ENVIO DE FICHA - AMBIENTE DE TESTE",
+  "Document":[
+      {
+        "DocumentContent": "image/png;base64,sgsgsfrwgyerwghs",
+        "DocumentType": "0",
+        "Observation": "Observação"
+      }
+   ]
+}
 ```
 
 ### Relação de campos - Response
 
 | Nível | Campo | Tipo de dado | Descrição |
 | --- | --- | --- | --- |
-|  |  |  |  |
-|  |  |  |  |
+| Principal | code | Number (3) | Código de retorno  |
+| Principal | message | String (2000) | Mensagem de retorno |
+| Principal | externalId | Number (10) | Código identificador único da junção no gerenciamento de risco |
+| Principal | securityAnalysis | Boolean | Identificador de análise de segurança |
 
 ### Exemplo de Response
 
 ```json
-
+{
+    "code": 200,
+    "message": "Sucesso",
+    "ExternalId": 71,
+    "securityAnalysis": true
+}
 ```
 
 ### Possíveis códigos de erro
 
 | Código | Descrição |
 | --- | --- |
-|  |  |
-|  |  |
+| 500 | Erro de execução. Verifique a tag message. |
 
 ---
 
-# EXEMPLO
+## Consultar CT-e
 
-## /getListaOrdemColeta
+Esse método permite a consulta de um CT-e emitido.
 
 **Método:** GET
 
-**Rota:** /…
+**Rota:** /Cte/getCte
 
 ### Relação de campos - Request
 
 | Nível | Campo | Obrigatório | Tipo de dado | Descrição |
 | --- | --- | --- | --- | --- |
-|  |  |  |  |  |
-|  |  |  |  |  |
+| Principal | cpfMotorista | S * | String (15) | CPF do Motorista |
+| Principal | numeroCte | S * | Number (10) | Número do CT-e |
+| Principal | serieCte | S* | String (5) | Série do CT-e |
+| Principal | chaveCfe | N | String (30) | Código de barras da CF-e  |
+| Principal | chaveCte | N | String (60) | Chave de acesso do CT-e |
 
-### Códigos de status
-
-| Código | Descrição |
-| --- | --- |
-|  |  |
-|  |  |
+*: Ao menos um dos campos deve ser informado
 
 ### Exemplo de Request
 
 ```json
-
+{
+    "cpfMotorista": "43575080968",
+    "numeroCte": 378869,
+    "serieCte": "1"
+}
 ```
 
 ### Relação de campos - Response
 
 | Nível | Campo | Tipo de dado | Descrição |
 | --- | --- | --- | --- |
+| Principal | code | Number (3) | Código da requisição HTTP |
+| Principal | cause | String (2000) | Descrição da causa da mensagem |
+| Principal | message | String (2000) | Mensagem de retorno |
+| Principal | numeroCte | Number (10) | Número do CT-e |
+| Principal | serieCte | String (5) | Série do CT-e |
+| Principal | codigoFilial | Number (4) | Código da filial |
+| Principal | nomeFilial | String (60) | Nome da filial |
+| Principal | contrato | Number (8) | Número do contrato |
+| Principal | varianteContrato | Number (4) | Número de variante do contrato |
+| Principal | dataEmissaoCte | Date | Data de emissão do CT-e |
+| Principal | valorMotorista | Number (15,3) | Valor do frete motorista |
+| Principal | valorAdiantamentoMotorista | Number (15,3) | Valor de adiantamento ao motorista |
+| Principal | valorAdiantamentoSaldo | Number (15,3) | Valor do saldo de adiantamento |
+| Principal | produto | String(70) | Descrição do produto |
+| Principal | pesoCarregado | Number (15,3) | Peso bruto do CT-e |
+| Principal | cpfMotorista | String (14) | CPF do Motorista |
+| Principal | nomeMotorista | String (60) | Nome do Motorista |
+| Principal | placaCavalo | String (15) | Placa do cavalo |
+| Principal | valeCombustivel | Object | Objeto referente ao Vale Combustível |
 |  |  |  |  |
-|  |  |  |  |
+| Vale Combustivel | percentualValeCombustivel | Number (15,3) | Percentual do Vale Combustível |
+| Vale Combustivel | valorValeCombustivel | Number (15,3) | Valor do Vale Combustível |
 
 ### Exemplo de Response
 
 ```json
-
+{
+    "code": 200,
+    "cause": "Sucesso",
+    "message": "Sucesso",
+    "numeroCte": 378869,
+    "serieCte": "1",
+    "codigoFilial": 32,
+    "nomeFilial": "UBERLANDIA - GO",
+    "contrato": 123456,
+    "varianteContrato": 1,
+    "dataEmissaoCte": "13/09/2022",
+    "valorMotorista": 5000.000,
+    "valorAdiantamentoMotorista": 2500.000,
+    "valorAdiantamentoSaldo": 1000.000,
+    "produto": "1 - SOJA",
+    "pesoCarregado": 32000.000,
+    "cpfMotorista": "12345678901",
+    "nomeMotorista": "TESTE MOTORISTA",
+    "placaCavalo": "ABC1234",
+    "valeCombustivel": {
+        "percentualValeCombustivel": 50.000,
+        "valorValeCombustivel": 2001.600
+    }
+}
 ```
 
 ### Possíveis códigos de erro
 
 | Código | Descrição |
 | --- | --- |
-|  |  |
-|  |  |
+| 406 | Nem todos os campos obrigatórios foram informados |
+| 404 | CT-e não encontrado |
+| 500 | Erro inesperado. Verifique a tag message. |
