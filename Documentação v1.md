@@ -7,19 +7,33 @@
 # Sumário
 
 [Obter ordens de coleta](#obter-ordens-de-coleta)
+
 [Finalizar a emissão de um carregamento](#finalizar-a-emissão-de-um-carregamento)
+
 [Consultar ordem de coleta](#consultar-ordem-de-coleta)
+
 [Listar operadoras de Carta Frete Eletrônica](#listar-operadoras-de-carta-frete-eletrônica)
+
 [Obter tipos de documento disponíveis para impressão](#obter-tipos-de-documento-disponíveis-para-impressão)
+
 [Imprimir Documentos](#imprimir-documentos)
+
 [Efetuar cancelamento de CT-e](#efetuar-cancelamento-de-ct-e)
+
 [Obter motivos de cancelamento](#obter-motivos-de-cancelamento)
+
 [Consultar nota fiscal](#consultar-nota-fiscal)
+
 [Consultar cancelamento de CT-e](#consultar-cancelamento-de-ct-e)
+
 [Listar operadoras de VP-e disponíveis](#listar-operadoras-de-vp-e-disponíveis)
+
 [Inserir Ordem de Coleta](#inserir-ordem-de-coleta)
+
 [Consultar conjunto](#consultar-conjunto)
+
 [Cadastro de conjunto](#cadastro-de-conjunto)
+
 [Consultar CT-e](#consultar-ct-e)
 
 
