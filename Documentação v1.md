@@ -50,7 +50,7 @@ Será disponibilizado dois ambientes:
 
 ## Autenticação
 
-A autenticação é feita através do método basica, o usuário e senha deve ser solicitado ao TI da Transvale.
+A autenticação é feita através do método basic, o usuário e senha deve ser solicitado ao TI da Transvale.
 
 ## Obter ordens de coleta
 
