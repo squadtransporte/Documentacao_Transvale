@@ -1,3 +1,5 @@
+# Documentação Centro de Manifesto Compartilhado
+
 # Histórico de versões
 
 | Versão | Modificado por | Alterações |
@@ -36,10 +38,9 @@
 
 [Consultar CT-e](#consultar-ct-e)
 
-
 # Visão geral
 
-Esta API foi criada para facilitar a comunicação entre o Centro de ManifestoCompartilhado da Transvale e o Maxys.
+Esta API foi criada para facilitar a comunicação entre o Centro de Manifesto Compartilhado da Transvale e o Maxys.
 
 Será disponibilizado dois ambientes:
 
@@ -49,7 +50,7 @@ Será disponibilizado dois ambientes:
 
 ## Autenticação
 
-A autenticação é feita através do método basic, o usuário e senha deve ser solicitado ao TI da Transvale.
+A autenticação é feita através do método basica, o usuário e senha deve ser solicitado ao TI da Transvale.
 
 ## Obter ordens de coleta
 
@@ -185,6 +186,181 @@ Obs: Ao menos um dos filtros deve ser informado.
 
 ---
 
+## Insere a emissão de um carregamento
+
+Este método insere a ordem de coleta na fila para emissão. A partir desse momento é iniciado a emissão de todos os documentos necessários para o carregamento (CT-e, MDF-e, CF-e, VP-e e averbação)
+
+**Método:** POST
+
+**Rota:** /OrdemColeta/inserir
+
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | nrOrdemCarregMaxys | N  | Number (8) | Número da ordem de coleta no Maxys |
+| Principal | CPFUsuario | S | String (14) | CPF do usuário que está finalizando a emissão da documentação |
+| Principal | CPFMotorista | S | String (14) | CPF do motorista |
+| Principal | placaCavalo | S | String (15) | Placa do Cavalo |
+| Principal | placaCarreta | N | String (15) | Placa da primeira carreta |
+| Principal | placaCarreta2 | N | String (15) | Placa da segunda carreta |
+| Principal | placaCarreta3 | N | String (15) | Placa da terceira carreta |
+| Principal | CPFCNPJRemetente | S | String (14) | CPF/CNPJ do remetente |
+| Principal | IBGEMunicipioRemetente | S | Number (7) | Código IBGE do municipio do remetente |
+| Principal | CPFCNPJDestinatario | S | String (14) | CPF/CNPJ do destinatário |
+| Principal | IBGEMunicipioDestinatario | S | Number (7) | Código IBGE do municipio do destinatário |
+| Principal | CPFCNPJExpedidor | N | String (14) | CPF/CNPJ do expedidor |
+| Principal | IBGEMunicipioExpedidor | N | Number (7) | Código IBGE do municipio do expedidor |
+| Principal | CPFCNPJRecebedor | N | String (14) | CPF/CNPJ do recebedor |
+| Principal | IBGEMunicipioRecebedor | N | Number (7) | Código IBGE do municipio do recebedor |
+| Principal | contratoMaxys | S | Number (8) | Código do contrato no Maxys |
+| Principal | varianteContratoMaxys | N | Number (4) | Variante do contrato do Maxys |
+| Principal | observacao | N | String (600) | Observação que contém no contrato |
+| Principal | emiteParcelaAdto | N | String (1 ) | Indica de irá emitir parcela de adiantamento |
+| Principal | pesoAgendado | N | Number (15,3) | Peso agendado |
+| Principal | numeroContainer | N | String (20) | Número do container |
+| Principal | tara | N | Number (15,3) | Valor da tara |
+| Principal | tipoMovimentacao | N | String (60) | Tipo da movimentação |
+| Principal | localCarregamento | N | String (60) | Descrição do local de despacho. |
+| Principal | dataHoraProgCarregamento | N | Date | Data/hora programada para coleta de container |
+| Principal | localDescarga | N | String (60) | Local de entrega do container cheio |
+| Principal | dataHoraProgDescarga | N | Date | Data/hora programada para descarga de container. |
+| Principal | lacre | N | String (20) | Número do lacre |
+| Principal | numeroReservaBooking | N | String (20) | Número de reserva/booking |
+| Principal | navio | N | String (60) | Descrição do navio |
+| Principal | tipoLancamento | S | Number (1) | Tipo do documento que será emitido (TABELA 01) |
+| Principal | observacaoCtrc | N | String (400) | Observação do CT-e |
+| Principal | dataAgendamento | N | Date | Data do carregamento |
+| Principal | CteAutomatico | N | Boolean | Indica se irá emitir o CT-e automatico |
+| Principal | TrocarNotas | N | Boolean | Indica se ira ocorrer troca de notas |
+| Principal | informacoesAdicPagador | N | String (4000) | Informações adicionais do pagador |
+|  |  |  |  |  |
+| Principal | cartaFrete | N | Object |  |
+| cartaFrete | codOperadora | N | Number (2) | Código da operadora |
+| cartaFrete | codOperacaoOperadora | N | String (10) | Categoria de veículo para a emissão de CF-e. |
+| cartaFrete | codFavorecido | N | Number (1) | Código do favorecido |
+|  |  |  |  |  |
+| Principal | notas | N | Array |  |
+| notas | numero | S | Number (15,3) | Número da nota fiscal |
+| notas | serie | S | String (3) | Série da nota fiscal |
+| notas | chaveAcesso | S | String (60) | Número da chave de acesso da nota fiscal |
+| notas | especie | S | String (5) | Espécie da nota fiscal |
+| notas | peso | S | Number (15,3) | Peso da nota fiscal |
+| notas | pesoLiquido | S | Number (15,3) | Peso liquido da nota fiscal |
+| notas | volumesNota | S | Number (5) | Quantidade de itens da nota fiscal |
+| notas | valor | S | Number (15,3) | Valor da nota fiscal |
+| notas | dataEmissao | S | Date | Data de emissão da nota fiscal |
+| notas | CFOP | S | Number (6) | CFOP da nota fiscal |
+| notas | selecionadaEmissao | S | Boolean | Status para saber se a nota foi selecionada para emissão de CT-e |
+|  |  |  |  |  |
+| Principal | pedagio | N | Object |  |
+| pedagio | tipoPagamentoCartao | N | String (3) | Tipo de pagamendo do pedagio |
+| pedagio | valorPedagioTerceiro | N | Number (15,3) | Valor do pedagio terceiro |
+| pedagio | numeroCartaoTerceiro | N | Number (16) | Número do cartão de terceiro |
+
+### TABELA 01 - Códigos de tipos de serviços (tipoServico/tipoDocumento)
+
+| Código | Descrição |
+| --- | --- |
+| 0 | Normal |
+| 1 | Subcontratação |
+| 2 | Redespacho |
+| 3 | Redespacho intermediário |
+| 4 | Serviço vinculado a multimodal |
+| 6 | Multimodal |
+
+### Exemplo de Request
+
+```json
+{
+    "nrOrdemCarregMaxys": null,
+    "CPFUsuario": "12345678901",
+    "CPFMotorista": "12345678901",
+    "placaCavalo": "ABC1234",
+    "placaCarreta": "ABC1234",
+    "placaCarreta2": "ABC1234",
+    "placaCarreta3": "ABC1234",
+    "CPFCNPJRemetente": "12345678901",
+    "IBGEMunicipioRemetente": 4317202,
+    "CPFCNPJDestinatario": "12345678901",
+    "IBGEMunicipioDestinatario": 4317202,
+    "CPFCNPJExpedidor": null,
+    "IBGEMunicipioExpedidor": null,
+    "CPFCNPJRecebedor": null,
+    "IBGEMunicipioRecebedor": null,
+    "contratoMaxys": 5000574,
+    "varianteContratoMaxys": 1,
+    "observacao": "TESTE EMISSÃO BLOQUEIO INFORMAÇÕES",
+    "emiteParcelaAdto": "S",
+    "pesoAgendado": 90000,
+    "numeroContainer": null,
+    "tara": null,
+    "tipoMovimentacao": null,
+    "localCarregamento": "frutal",
+    "dataHoraProgCarregamento": "01/01/2022",
+    "localDescarga": "Santa Rosa",
+    "dataHoraProgDescarga": null,
+    "lacre": null,
+    "numeroReservaBooking": null,
+    "navio": "",
+    "tipoLancamento": "CTE",
+    "observacaoCtrc": "Observação teste CTRC",
+    "dataAgendamento": "'01/01/2022'",
+    "CteAutomatico": true,
+    "TrocarNotas": false,
+    "informacoesAdicPagador": "testes",
+    "cartaFrete": {
+        "codOperadora": 6,
+        "codOperacaoOperadora": null,
+        "codFavorecido": null
+    },
+    "pedagio": {
+        "tipoPagamentoCartao": null,
+        "numeroCartaoTerceiro": null,
+        "valorPedagioTerceiro": null
+    },
+    "notas": [
+        {
+            "numero": 12345,
+            "serie": "1",
+            "especie": "NFE",
+            "chaveAcesso": "52220901598504000118550010000879521001981394",
+            "peso": 30000,
+            "valor": 90000,
+            "volumesNota": 30000,
+            "pesoLiquido": 30000,
+            "dataEmissao": "12/09/2022",
+            "CFOP": 5906,
+            "selecionadaEmissao": true
+        }
+    ]
+}
+```
+
+### Relação de campos - Response
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+| Principal | nrOrdemCarregMaxys | Number (3) | Código de retorno |
+
+### Exemplo de Response
+
+```json
+{
+    "nrOrdemCarregMaxys": 1235465
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Validação de dados para finalização da Ordem de Carregamento |
+| 404 | Não foi encontrada nenhuma ordem de carregamento para a finalização |
+| 500 | Erro interno do servidor. Verifique a tag message. |
+
+---
+
 ## Finalizar a emissão de um carregamento
 
 Este método insere a ordem de coleta na fila para emissão. A partir desse momento é iniciado a emissão de todos os documentos necessários para o carregamento (CT-e, MDF-e, CF-e, VP-e e averbação)
@@ -276,25 +452,15 @@ Este método insere a ordem de coleta na fila para emissão. A partir desse mome
 
 | Nível | Campo | Obrigatório | Tipo de dado | Descrição |
 | --- | --- | --- | --- | --- |
-| Principal | numeroOrdemColeta |  | Number (8) | Número da ordem de coleta do Maxys a ser finalizada |
-| Principal | status |  | String (200) | Status da ordem de carregamento na fila de emissão de CT-e |
-
-Códigos de tipos de status (status)
-
-| Código | Descrição |
-| --- | --- |
-| N | Não processado |
-| P | Processando |
-| F | Finalizado |
-| A | Aguardando Emissão |
-| E | Erro |
+| Principal | code |  | Number (3) | Código de retorno |
+| Principal | message |  | String (2000) | Mensagem de retorno |
 
 ### Exemplo de Response
 
 ```json
 {
-    "nrOrdemCarregMaxys": 12345679,
-    "status": "A"
+    "code": 200,
+    "message": "Sucesso"
 }
 ```
 
@@ -392,7 +558,7 @@ Este método permite a consulta de uma ordem de coleta, retornando informações
 | Ordem Carregamento | dataAgendamento | Date | Data do agendamento da Ordem de Coleta |
 | Ordem Carregamento | observacao | String (240) | Observação da Ordem de Coleta |
 | Ordem Carregamento | observacaoCtrc | String (400) | Observação do CT-e |
-| Ordem Carregamento | emiteParcelaAdto | String (1) | Define se será emitida a parcela de adiantamento para o frete (S- sim ou N - Náo) |
+| Ordem Carregamento | emiteParcelaAdto | String (1) | Define se será emitida a parcela de adiantamento para o frete (S- sim ou N - Não) |
 | Ordem Carregamento | exigeInfoAdicPagador | Boolean | Indica se deve obrigar o número do pedido, número loud, termo de transportes e outros |
 | Ordem Carregamento | textoAdicPagador | String (240) | Texto adicional do TAF001 |
 | Ordem Carregamento | informacoesAdicPagador | String (4000) | Informações adicionais exigidas pelo Clifor pagador para emissão do CT-e automático |
@@ -414,17 +580,19 @@ Este método permite a consulta de uma ordem de coleta, retornando informações
 | Notas | dataEmissao | Date | Data de emissão da nota fiscal |
 | Notas | CFOP | Number (6) | CFOP da nota fiscal |
 | Notas | selecionadaEmissao | Boolean | Indica se a nota foi selecionada para emissão de CT-e |
+| Notas | notaDigitada | Boolean | Indica se a nota foi digitada  |
 |  |  |  |  |
 | Ordem Carregamento | geraNFSE | Boolean | Indica se deve gerar NFSE |
 | Ordem Carregamento | geraDACTE | Boolean | Indica se deve gerar DACTE |
 | Ordem Carregamento | geraMDFE | Boolean | Indica se deve gerar MDFE |
 | Ordem Carregamento | geraTermoEstadia | Boolean | Indica se deve gerar Termo de Estadia |
-| Ordem Carregamento | geraCFe | Boolean | Indica se deve gerar CFe |
+| Ordem Carregamento | geraCFe | Boolean | Indica se deve gerar CF-e |
 | Ordem Carregamento | geraContratoFrete | Boolean | Indica se deve gerar Contrato Frete |
 | Ordem Carregamento | geraCartaFrete | Boolean | Indica se deve gerar Carta Frete |
 | Ordem Carregamento | dataCancelamento | Date (”DD/MM/RRRR HH24:MI:SS”) | Data de cancelamento da Ordem de Coleta |
-| Ordem Carregamento | statusFilaEmissao | String (1) | Status da fila de emissao da Ordem de Coleta (Tabela 01) |
+| Ordem Carregamento | statusFilaEmissao | String (1) | Status da fila de emissão da Ordem de Coleta (Tabela 01) |
 | Ordem Carregamento | statusEmissao | Number (1) | Status da emissão do CT-e (Tabela 02) |
+| Ordem Carregamento | notaDifitada | Boolean | Indica se a nota foi digitada |
 | Ordem Carregamento | mensagemFilaEmissao | String (2000)  | Mensagem da fila de emissão |
 | Ordem Carregamento | pagamentoPedagioAntecipado | Boolean | Indica se o pedágio foi pago antecipadamente pelo Clifor pagador |
 | Ordem Carregamento | contrato | Object |  |
@@ -445,8 +613,6 @@ Este método permite a consulta de uma ordem de coleta, retornando informações
 | Juncao | placaCarreta | String (15) | Placa da carreta |
 | Juncao | placaCarreta2 | String (15) | Placa da carreta 2 |
 | Juncao | placaCarreta3 | String (15) | Placa da carreta 3 |
-| Juncao | descStatus | String (4000) | Descrição do status da junção |
-| Juncao | emiteCTe | Boolean | Indica se deve emitir CT-e |
 |  |  |  |  |
 | Ordem Carregamento | documentos | Array |  |
 |  |  |  |  |
@@ -454,12 +620,7 @@ Este método permite a consulta de uma ordem de coleta, retornando informações
 | Documentos | numeroLancamento | Number (7) | Número de lançamento do CT-e |
 | Documentos | numero | Number (10) | Número do CT-e |
 | Documentos | serie | String (5) | Série do CT-e |
-| Documentos | tipoLancamento | Number (1) | Código de status do CT-e(Tabela 03) |
-|  |  |  |  |
-| Ordem Carregamento | gerenciamentoRisco | Object |  |
-|  |  |  |  |
-| Gerenciamento Risco | liberacaoRastreamentoExterno | String (15) | Número da liberação da gerenciadora de risco externa |
-| Gerenciamento Risco | codigoGerenciadora | Number (4) | Código da gerenciadora de risco |
+| Documentos | tipoLancamento | String (20) | Código de status do CT-e(Tabela 03) |
 |  |  |  |  |
 | Ordem Carregamento | valoresTransportador | Object |  |
 |  |  |  |  |
@@ -468,6 +629,7 @@ Este método permite a consulta de uma ordem de coleta, retornando informações
 | Valores Transportador | valorPedagio | Number (15,3) | Valor do Pedágio |
 | Valores Transportador | valorAdiantamento | Number (15,3) | Valor do Adiantamento |
 | Valores Transportador | valeCombustivel | Object |  |
+|  |  |  |  |
 | Valores Transportador | percentualValeCombustivel | Number (15,3) | Percentual do Vale Combustível |
 | Valores Transportador | valorValeCombustivel | Number (15,3) | Valor do Vale Combustível |
 |  |  |  |  |
@@ -592,10 +754,7 @@ Este método permite a consulta de uma ordem de coleta, retornando informações
                 "placaCavalo": "TES1A34",
                 "placaCarreta": "MHE2A45",
                 "placaCarreta2": "LAL3A56",
-                "placaCarreta3": "DNS4A67",
-                "descStatus": "Exemplo de descrição da junção",
-                "observacaoGR": "Observação de alteração de status da junção",
-                "emiteCTe": true
+                "placaCarreta3": "DNS4A67"
             },
             "documentos": [
                 {
@@ -606,11 +765,6 @@ Este método permite a consulta de uma ordem de coleta, retornando informações
                     "tipoLancamento": 1
                 }
             ],
-            "gerenciamentoRisco": {
-                "liberacaoRastreamentoExterno": "ABVC123456",
-                "codigoGerenciadora": 84
-            },
-            "validaGerenciamentoRisco": true,
             "valoresTransportador": {
                 "tarifaTransportador" : 180.000,
                 "valorFrete" : 5004.023,
@@ -648,6 +802,20 @@ Este método retorna as operadoras cadastradas no Maxys e disponíveis para emis
 
 **Rota:** /cadastros/getOperadorasCfe
 
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | filialMaxys | S | Number (4) | Código da filial do Maxys |
+
+### Exemplo de Request
+
+```json
+{
+    "filialMaxys": 5
+}
+```
+
 ### Relação de campos - Response
 
 | Nível | Campo | Tipo de dado | Descrição |
@@ -655,7 +823,6 @@ Este método retorna as operadoras cadastradas no Maxys e disponíveis para emis
 | Principal | Operadoras |  | Operadoras cadastradas |
 | Operadoras | codOperadora | Number (2) | Código da operadora |
 | Operadoras | descOperadora | String (60) | Nome da operadora |
-| Operadoras | urlImagem | String (400) | URL da imagem da operadora |
 | Operadoras | Operacoes | Array | ** |
 |  |  |  |  |
 | Operacoes | codOperacao | Number (10) | Código da operação |
@@ -680,7 +847,6 @@ Este método retorna as operadoras cadastradas no Maxys e disponíveis para emis
         {
             "codOperadora": 1,
             "descOperadora": "PAMCARY",
-            "urlImagem": "http://pamcary.com.br/imagem",
             "operacoes": [
                 {
                     "codOperacao": 1,
@@ -732,7 +898,7 @@ Este método recebe os dados de um CT-e e retorna os documentos (PDF) que foram 
 
 | Nível | Campo | Tipo de dado | Descrição |
 | --- | --- | --- | --- |
-| Principal | tipoDocumento | Number (2) | Tipo de documento |
+| Principal | tipoDocumento | Number (2) | Tipo de documento (TABELA 01) |
 | Principal | descricaoDocumento | String (60) | Descrição do tipo de documento |
 
 ### Exemplo de Response
@@ -745,6 +911,19 @@ Este método recebe os dados de um CT-e e retorna os documentos (PDF) que foram 
     }
 ]
 ```
+
+### TABELA 01 - Códigos de tipos de documentos(tipoDocumento)
+
+| Código | Descrição |
+| --- | --- |
+| 1 | DACTE |
+| 2 | MDFE |
+| 3 | NFSE |
+| 4 | CIOT |
+| 5 | CONTRATO DE FRETE |
+| 6 | TERMO ESTADIA |
+| 7 | CARTA FRETE |
+| 9 | CARTA FRETE AUTONOMO |
 
 ### Possíveis códigos de erro
 
@@ -897,6 +1076,11 @@ Esse método lista os motivos de cancelamento que podem ser usados para cancelam
 |  |  |  |  |
 | motivosCancelamento | codigo | Number(5) | Código do motivo de cancelamento |
 | motivosCancelamento | descricao | String (60) | Descrição do motivo de cancelamento |
+|  |  |  |  |
+| Principal | totalDocs | Number | Número total de documentos da Ordem de Coleta |
+| Principal | limit | Number | Quantidade de registros por página |
+| Principal | page | Number | Página atual |
+| Principal | totalPages | Number | Número total de páginas |
 
 ### Exemplo de Response
 
@@ -1141,7 +1325,6 @@ Esse método retorna todas as operadores de Vale Pedágio eletrônico disponíve
 | tipoPagamentoPegadio | codPagamento | Number (2) | Código do tipo de pagamento |
 | tipoPagamentoPegadio | descPagamento | String (60) | Descrição do tipo de pagamento |
 | tipoPagamentoPegadio | obrigaNrCartao | Boolean | Indica se é obrigatório o número do cartão |
-| tipoPagamentoPegadio | urlImagem | String (400) | URL da imagem da operadora |
 
 ### Exemplo de Response
 
@@ -1151,8 +1334,7 @@ Esse método retorna todas as operadores de Vale Pedágio eletrônico disponíve
         {
             "codPagamento": 7,
             "descPagamento": "Tag - Target Via Facil",
-            "obrigaNrCartao": false,
-            "urlImagem": ""
+            "obrigaNrCartao": false
         }
     ]
 }
@@ -1413,7 +1595,7 @@ Esse método permite o cadastro de um conjunto no Maxys.
 | DeviceRegisters | Landline | N | String (15) | Número de telefone do proprietário do veículo |
 | DeviceRegisters | Plate | S | String (15) | Placa do veículo |
 | DeviceRegisters | CityPlate | S | Number (7) | Código IBGE de registro do veículo |
-| DeviceRegisters | Document3 | S | String (12) | Número do Renavam do veícuço |
+| DeviceRegisters | Document3 | S | String (12) | Número do Renavam do veículo |
 | DeviceRegisters | DeviceBrand | S | String (100) | Marca do veículo (enviar código identificador, para relacionamento com DE/PARA) |
 | DeviceRegisters | DeviceModel | S | String (100) | Modelo do veículo (enviar código identificador, para relacionamento com DE/PARA) |
 | DeviceRegisters | DeviceType | S | String (100) | Tipo do veículo (enviar código identificador, para relacionamento com DE/PARA) |
