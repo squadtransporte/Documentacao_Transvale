@@ -6,7 +6,7 @@ Método responsável por gerar as transações de consumo, ele irá gerar duas n
 
 **Método:** POST
 
-**Rota:** INTEGRACAOTVALE/REGISTRA_TRANSACAO
+**Rota:** https://cloudapp.maxiconsystems.com.br:8474/integracao-api/api/INTEGRACAOTVALE/REGISTRA_TRANSACAO
 
 ### Relação de Campos → Request:
 
@@ -76,7 +76,7 @@ Método responsável por agrupar notas de recebimento em uma fatura.
 
 **Método:** POST
 
-**Rota:** INTEGRACAOTVALE/FATURARECTO
+**Rota:** https://cloudapp.maxiconsystems.com.br:8474/integracao-api/api/INTEGRACAOTVALE/FATURARECTO
 
 ### Relação de Campos → Request:
 
@@ -122,7 +122,7 @@ Método responsável por agrupar notas de pagamento em uma fatura.
 
 **Método:** POST
 
-**Rota:** INTEGRACAOTVALE/FATURAPAGTO
+**Rota:** https://cloudapp.maxiconsystems.com.br:8474/integracao-api/api/INTEGRACAOTVALE/FATURAPAGTO
 
 ### Relação de Campos → Request:
 
@@ -168,7 +168,7 @@ Método responsavel por gerar a nota fiscal de serviço com o valor de SPREAD do
 
 **Método:** POST
 
-**Rota:** INTEGRACAOTVALE/GERA_NOTAFISCALSERVICO
+**Rota:** https://cloudapp.maxiconsystems.com.br:8474/integracao-api/api/INTEGRACAOTVALE/GERA_NOTAFISCALSERVICO
 
 ### Relação de Campos → Request:
 
@@ -220,7 +220,7 @@ Método responsável por gerar e executar o processo de caixa dos documentos.
 
 **Método:** POST
 
-**Rota:** INTEGRACAOTVALE/GERA_PROCESSO
+**Rota:** https://cloudapp.maxiconsystems.com.br:8474/integracao-api/api/INTEGRACAOTVALE/GERA_PROCESSO
 
 ### Relação de Campos → Request:
 
@@ -268,7 +268,7 @@ Método responsável por estornar notas fiscais, irá gerar uma nova transação
 
 **Método:** POST
 
-**Rota:** INTEGRACAOTVALE/ESTORNA_NOTA
+**Rota:** https://cloudapp.maxiconsystems.com.br:8474/integracao-api/api/INTEGRACAOTVALE/ESTORNA_NOTA
 
 ### Relação de Campos → Request:
 
