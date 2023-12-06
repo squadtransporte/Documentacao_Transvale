@@ -1,4 +1,26 @@
 # Sumário
+# Autenticação
+  A autenticação é feita via Bearer Token retornado pela rota.
+
+**Método:** GET
+
+**Rota:** https://cloudapp.maxiconsystems.com.br:8474/integracao-api/api/security/login
+
+### Exemplo de Request:
+
+```json
+{
+    "authorization": "Basic usuárioEsenhaBase64"
+}
+```
+
+### Exemplo de Response
+
+```json
+{
+    "token": "token"
+}
+```
 
 # Geração de Transação
 
