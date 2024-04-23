@@ -38,6 +38,14 @@
 
 [Consultar CT-e](#consultar-ct-e)
 
+[GET Pagamento CT-e](#get-pagamentocte)
+
+[GET Adicionais](#get-adicionais)
+
+[POST Pagamento CT-e](#post-postpagamentocte)
+
+[POST Processa Lote](#post-processalote)
+
 # Visão geral
 
 Esta API foi criada para facilitar a comunicação entre o Centro de Manifesto Compartilhado da Transvale e o Maxys.
@@ -1880,3 +1888,442 @@ Esse método permite a consulta de um CT-e emitido.
 | 406 | Nem todos os campos obrigatórios foram informados |
 | 404 | CT-e não encontrado |
 | 500 | Erro inesperado. Verifique a tag message. |
+
+## GET PagamentoCte
+
+Este método exibe as informações da geração de relação no TAF007 para ser possivel ter uma noção dos valores antes de realizar o processo. Oferece a mesma visão do TAF007 no Maxys.
+
+**Método: GET**
+
+**Rota:** /pagamentoCte/getPagamento?getPagamento?numeroCte={numeroCte}&cpfMotorista={cpfMotorista}&serieCte={serieCte}&numeroParcela={numeroParcela}&pesoDestino={pesoDestino}
+
+### Relação de campos - Response
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | numeroCte | S | Number (10) | Numero do CT-e para ser consultado |
+| Principal | cpfMotorista | S | String (11) | Cpf do Motorista relacionado ao CT-e |
+| Principal | serieCte | S | Number (5) | Série do CT-e informado |
+| Principal | chaveCte | N | String(60) | Chave de acesso do CT-e |
+| Principal | chaveCfe | N | Number(15) | Chave da CF-e |
+| Principal | numeroParcela | S | Number(1) | Numero da Parcela TAF007 (TABELA01) |
+| Principal | tipoPagamento | S | String(1) | Pagamento referente ao TAF007 (TABELA02) Padrão “D” |
+| Principal | pesoDestino | N | Number(15,3) | Peso destino para simular o adicional de quebra. OBS: Usado somente com a parcela 2 |
+
+### TABELA 01 - Parcela referente ao TAF007
+
+| Código | Descrição |
+| --- | --- |
+| 1 | Adiantamento |
+| 2 | Saldo da Carta |
+
+### TABELA 02 - Pagamento referente ao TAF007
+
+| Código | Descrição |
+| --- | --- |
+| D | Com Documento |
+| A | Antecipado |
+
+### Relação de campos - Response
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+| Principal | code | Number(3) | Código do retorno |
+| Principal | message | String(1000) | Mensagem de retorno |
+| Principal | documento | Objetct |  |
+| documento | chaveDocumento | String(17) | Chave retornada no getPagamento |
+| documento | numeroParcela | Number(1) | Numero da parcela correspondente (TABELA01) |
+| documento | codigoTipoContaPagRec | Number(4) | Código do tipo da conta |
+| documento | codigoClifor | Number(7) | Código do clifor |
+| documento | nomeClifor | String(60) | Nome do clifor  |
+| documento | numeroDocumento | Number(10) | Numero do documento |
+| documento | valorSaldo | Number(15,3) | Valor do saldo |
+| documento | codigoCmi | Number(5) | Código do CMI |
+| documento | numeroCartaFrete | Number(15) | Numero da carta frete |
+| documento | codigoContrato | Number(8) | Código do contrato de frete |
+| documento | codigoEmprContrato | Number(4) | Empresa do contrato de frete |
+| documento | codigoSeqContrato | Number(4) | Variante do contrato de frete |
+| documento | codigoTransportador | Number(7) | Código do transportador  |
+| documento | codigoEnderTransportador | Number(2) | Código do endereço do transportador |
+| documento | numeroCfe | Number(15) | Numero da Carta Frete Eletronica |
+| documento | codigoOperadoraCfe | Number(2) | Código da operadora  |
+| documento | placaCavalo | String(7) | Placa do cavalo |
+| documento | quantidadeVolumeDest | Number(15,3) | Quantidade de volume |
+| documento | codigoCliforPagador | Number(7) | Código do clifor pagador |
+| documento | nomeCliforPagador | String(60) | Nome do clifor pagador |
+| documento | valorTarifaAgenc | Number(15,3) | Valor da tarifa agenciado |
+| documento | valorFreteAgenc | Number(15,3) | Valor do frete agenciado |
+| documento | valorAdiantamento | Number(15,3) | Valor do adiantamento |
+| documento | valorPedagio | Number(15,3) | Valor do pedagio |
+| documento | pesoLiquido | Number(15,3) | Peso liquido do frete |
+| documento | pesoBrutoDestino | Number(15,3) | Peso bruto no destino (Quando cadastrado) |
+| documento | percentualTolerancia | Number(6,2) | Percentual de tolerancia |
+| documento | tipoTolerancia | String(1) | Tipo da tolerancia (Contrato TTB121) |
+| documento | valorUnitarioFrete | Number(15,3) | Valor unitário do frete |
+| documento | statusLocacao | String(1) | Status da locação |
+| documento | ftCalculo | Number(12,6) | Fator de calculo  |
+| documento | codigoTipoCalculoFrete | Number(3) | Código do tipo de calculo |
+| documento | quantidadePesoTolerado | Number(15,3) | Quantidade de peso tolerado |
+| documento | somaPedagioAdiantamento | Number(15,3) | Soma do pedagio adiantamento |
+| documento | codigoSitDupl | Number(2) | Código da situação da duplicata (TABELA 02) |
+| documento | valorSaldoCheio | Number(15,3) | Valor do saldo cheio |
+| documento | valorAdiantamentoCheio | Number(15,3) | Valor adiantamento cheio |
+| documento | valorTarifaMotCheio | Number(15,3) | Valor da tarifa motorista cheio |
+| documento | valorFreteAgencCheio | Number(15,3) | Valor frete agenciado cheio |
+| documento | codigoMotorista | Number(7) | Código do motorista |
+| documento | nomeMotorista | String(60) | Nome do motorista |
+| documento | valeCombustivel | Boolean | Indica se o CT-e possui vale combustivel |
+| documento | adicionais  | Array |  |
+| adicionais | codigoAdicional | Number(4) | Código do adicional de frete (TTB034) |
+| adicionais | descricaoAdicional | String(60) | Descrição do adicional de frete |
+| adicionais | tipoAdicional | String(5) | Tipo do adicional de frete (D - DIMINIU / S - SOMA) |
+| adicionais | valorAdicional | Number(15,3) | Valor do adicional |
+| documento | numeroAgrupamento | Number(15) | Código do CT-e agrupado |
+
+### TABELA 01 - Parcela referente ao TAF007
+
+| Código | Descrição |
+| --- | --- |
+| 1 | Adiantamento |
+| 2 | Saldo da Carta |
+
+### TABELA 01 - Códigos da situaçao de duplicata
+
+| Código | Descrição |
+| --- | --- |
+| 0 | Pendente total |
+| 1 | Liquidado parcialmente |
+| 2 | Liquidado total |
+| 8 | Programação financeira bloqueada |
+| 9 | Cancelado |
+| 10 | Pendente total - central |
+| 11 | Liquidado parcialmente - central |
+| 12 | liquidado total - central |
+
+### Exemplo de Response
+
+```json
+{
+    "code": 200,
+    "message": "Sucesso",
+    "documento": {
+        "chaveDocumento": "00050008042000031",
+        "numeroParcela": 2,
+        "codigoTipoContaPagRec": 206,
+        "codigoClifor": 909432,
+        "nomeClifor": "LUCAS MICHALSKI PF",
+        "numeroDocumento": 20498,
+        "valorSaldo": 789,
+        "codigoCmi": null,
+        "numeroCartaFrete": 20498,
+        "codigoContrato": 105228,
+        "codigoEmprContrato": 5,
+        "codigoSeqContrato": 1,
+        "codigoTransportador": 909432,
+        "codigoEnderTransportador": 1,
+        "numeroCfe": null,
+        "codigoOperadoraCfe": "",
+        "placaCavalo": "LAL1111",
+        "quantidadeVolumeDest": null,
+        "codigoCliforPagador": 909424,
+        "nomeCliforPagador": "LUCAS MICHALSKI PJ",
+        "valorTarifaAgenc": 50,
+        "valorFreteAgenc": 1316,
+        "valorAdiantamento": 527,
+        "valorPedagio": 0,
+        "pesoLiquido": 26320,
+        "pesoBrutoDestino": null,
+        "percentualTolerancia": 0.25,
+        "tipoTolerancia": "T",
+        "valorUnitarioFrete": 250,
+        "statusLotacao": "N",
+        "ftCalculo": 1000,
+        "codigoTipoCalculoFrete": 9,
+        "quantidadePesoTolerado": null,
+        "somaPedagioAdiantamento": "N",
+        "codigoSitDupl": 0,
+        "valorSaldoCheio": 789,
+        "valorAdiantamentoCheio": 527,
+        "valorTarifaMotCheio": 50,
+        "valorFreteAgencCheio": 100,
+        "codigoMotorista": 909440,
+        "nomeMotorista": "LUCAS MICHALSKI MOTORISTA",
+        "valeCombustivel": true,
+        "adicionais": [
+            {
+                "codigoAdicional": 26,
+                "descricaoAdicional": "TAXA DE SEGURO DE CARGA",
+                "tipoAdicional": "D",
+                "valorAdicional": 219.21
+            },
+            {
+                "codigoAdicional": 35,
+                "descricaoAdicional": "MICRO SEGURO",
+                "tipoAdicional": "D",
+                "valorAdicional": 5.9
+            },
+            {
+                "codigoAdicional": 1,
+                "descricaoAdicional": "FALTA DE PESO/PRODUTO",
+                "tipoAdicional": "D",
+                "valorAdicional": 41969.61
+            }
+        ],
+        "numeroAgrupamento": null
+    }
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Não foi possivel consultar CT-e/CF-e |
+| 500 | Erro ao consultar CT-e/CF-e. |
+
+---
+
+## GET Adicionais
+
+Este método lista os adicionais existentes no maxys, retornando os dados referente a tela TTB034 do maxys.
+
+**Método: GET**
+
+**Rota:** /Cte/getAdicionais?codigoAdicional={codigoAdicional}&descricaoAdicional={descricaoAdicional}&tipoAdicional={tipoAdicional}&tipoRecPag={tipoRecPag}
+
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | codigoAdicional | N | Number (4) | Código do adicional |
+| Principal | descricaoAdicional | N | String (60) | Descrição do adicional |
+| Principal | tipoAdicional | N | String (5) | Tipo do adicional. S - Soma / D - Diminui |
+| Principal | tipoRecPag | N | String (1) | Indica se é recebimento (0) ou pagamento (1) |
+
+### Relação de campos - Response
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+| Principal | code | Number (3) | Código de retorno |
+| Principal | message | String (200) | Mensagem de retorno |
+| Principal | adicionais | Array | Array de adicionais |
+|  |  |  |  |
+| adicionais | codigoAdicional | Number (4) | Código do adicional |
+| adicionais | descricaoAdicional | String (60) | Descrição do adicional |
+| adicionais | tipoAdicional | String (5) | Tipo do Adicional. S- Soma / D- Diminui |
+| adicionais | tipoRecPag | String (1) | Indica se é recebimento (0) ou pagamento (1) |
+
+### Exemplo de Response
+
+```json
+{
+    "code": 200,
+    "message": "Sucesso",
+    "adicionais": [
+        {
+            "codigoAdicional": 1,
+            "descricaoAdicional": "FALTA DE MERCADORIA MOTORISTA",
+            "tipoAdicional": "D",
+            "tipoRecPag": "P"
+        }
+    ]
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Erro ao consultar tipo adicional de frete. |
+| 500 | Erro ao consultar tipo adicional de frete. Verifique a tag message. |
+
+---
+
+## POST postPagamentoCte
+
+Este método irá realizar todo o processo de geração de relação do TAF007 até a execução do processo de caixa no FCT003
+
+**Método: POST**
+
+**Rota:** /pagamentoCte/postPagamento
+
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | cpfCnpjBeneficiario | S | String(14) | CPF ou CNPJ do beneficiário do pagamento |
+| Principal | empresa | S | Number(4) | Código da empresa |
+| Principal | formaPagamento | S | String(1) | Forma de pagamento usada no FCT003 (B - BANCO / H - CHEQUE) |
+| Principal | cheques | S | Array |  |
+| cheques | numeroCheque | S | Number(8) | Numero do cheque quando for a forma de pagamento “B” |
+| cheques | serieCheque | S | String(3) | Serie do cheque |
+| cheques | valorCheque | S | Number(15,3) | Valor a ser usado no cheque |
+| cheques | codigoBanco | N | Number(3) | Código do banco. OBS: Somente necessário quando a forma de pagamento for “H” |
+| Principal | documentos | Array |  |  |
+| documentos | chaveDocumento | S | String(17) | Chave retornada do getPagamentoCte |
+| documentos | numeroParcela | S | Number(2) | Parcela a ser paga referente ao TAF007 |
+| documentos | pesoDestino | N | Number(15,3) | Peso de chegada somente quando for numero da parcela 2 |
+| documentos | adicionais | Array |  |  |
+| adicionais | codigoAdicional | S | Number(4) | Código do adicional de frete |
+| adicionais | descricaoAdicional | S | String(60) | Descrição do adicional de frete |
+| adicionais | tipoAdicional | S | String(5) | Tipo do adicional de frete |
+| adicionais | statusAdicional | S | String(1) | Status do adicional de frete |
+| adicionais | valorAdicional | S | Number(15,3) | Valor do adicional de frete |
+| adicionais | dtChegada | N | Date | Data e Hora da chegada do motorista  |
+| adicionais | hrTolerancia | N | Number | Quantidade de horas de tolerancia |
+| adicionais | dtSaida | N | Date | Data e Hora da saida do motorista |
+| adicionais | vlTarifa | N | Number(15,3) | Valor da tarifa da estadia |
+| adicionais | vlEstadia | N | Number(15,3) | Valor da estadia |
+| adicionais | vlPagoestadia | N | Number(15,3) | Valor que será pago |
+| adicionais | hrRetroagir | N | Number | Quantidade de horas a retroagir |
+| adicionais | dsObservpagto | N | String | Observação da Estadia |
+
+```json
+{
+    "cpfCnpjBeneficiario": "81738290042",
+    "empresa": 5,
+    "formaPagamento": "H",
+    "cheques": [
+        {
+            "numeroCheque": null,
+            "serieCheque": "A",
+            "valorCheque": 281.93,
+            "codigoBanco": 1,
+            "codigoAgencia": 285,
+            "numeroConta": 2156574
+        },
+        {
+            "numeroCheque": null,
+            "serieCheque": "A",
+            "valorCheque": 281.96,
+            "codigoBanco": 1,
+            "codigoAgencia": 285,
+            "numeroConta": 2156574
+        }
+    ],
+    "documentos": [
+        {
+            "chaveDocumento": "00050008038000031",
+            "numeroParcela": 2,
+            "pesoDestino": 26320,
+            "adicionais": [
+                {
+                    "codigoAdicional": 26,
+                    "descricaoAdicional": "TAXA DE SEGURO DE CARGA",
+                    "tipoAdicional": "D",
+                    "statusAdicional": "N",
+                    "valorAdicional": 219.21
+                },
+                {
+                    "codigoAdicional": 35,
+                    "descricaoAdicional": "MICRO SEGURO",
+                    "tipoAdicional": "D",
+                    "statusAdicional": "N",
+                    "valorAdicional": 5.9
+                },
+								{
+                    "codigoAdicional": 5,
+                    "descricaoAdicional": "PAGAMENTO ESTADIA",
+                    "tipoAdicional": "S",
+                    "dtChegada": "01/02/2023 13:30:00",
+                    "dtSaida": "03/02/2023 17:20:00",
+                    "hrTolerancia": 24, 
+                    "vlTarifa": 0.2,  
+                    "valorAdicional":  209.68,  
+                    "vlEstadia": 209.68,    
+                    "vlPagoestadia": 209.68 ,
+                    "hrRetroagir": 12
+
+                }
+            ]
+        }
+    ]
+}
+```
+
+### Relação de campos - Response
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+|  Principal | code | Number(3) | Código do retorno |
+|  Principal | message | String(1000) | Mensagem de retorno |
+|  Principal | empresaRelacao | Number(4) | Empresa da relação do TAF007 |
+|  Principal | idRelacao | Number(8) | Id da relação referente ao TAF007 |
+|  Principal | numeroProcesso | Number(8) | Numero do processo de caixa |
+|  Principal | statusProcesso | String(20) | Status do processo de caixa |
+| Principal | idProcesso | String(12) | Id do processo que sera usado para o endpoint de processaLote |
+
+### Exemplo de Response
+
+```json
+{
+	"code": 200,
+	"message": "Sucesso",
+	"empresaRelacao": 5,
+	"idRelacao": 1756,
+	"numeroProcesso": 103073,
+	"stastusProcesso": "Executado",
+	"idProcesso": "000100000001"
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Erro ao gravar relação ou executar o processo de caixa. Verifique |
+| 500 | Erro ao gravar relação ou executar o processo de caixa. Erro. |
+
+---
+
+## POST processaLote
+
+Este método irá realizar a amarração dos processos que forem enviados em um lote externo para ser realizado a execução do processo de caixa via FCT003
+
+**Método: POST**
+
+**Rota:** /pagamentoCte/processaLote
+
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | processos | S | Array |  |
+| processos |  |  |  | Dentro desse array é enviado todos os idProcesso que são retornados no postPagamento |
+
+```json
+{
+     "processos": [
+          "000500103837",
+          "000500103836"
+          
+     ]
+}
+```
+
+### Relação de campos - Response
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+|  Principal | code | Number(3) | Código do retorno |
+|  Principal | message | String(1000) | Mensagem de retorno |
+|  Principal | cause | String(1000) | Causa do retorno |
+| Principal | idLoteExterno | Number(8) | Lote do processo externo para ser consultado no FCT003 |
+
+### Exemplo de Response
+
+```json
+{
+    "code": 200,
+    "cause": "Sucesso",
+    "message": "OK",
+    "idLoteExterno": 7
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Erro ao gravar relação ou executar o processo de caixa. Verifique |
+| 500 | Erro ao gravar relação ou executar o processo de caixa. Erro. |
