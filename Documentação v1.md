@@ -5,6 +5,7 @@
 | Versão | Modificado por | Alterações |
 | --- | --- | --- |
 | 1 | Daniel Schmitz, Mateus Cavalcante, Lucas Michalski | Criação da documentação |
+| 2 | Daniel Schmitz | Incluído endpoints para pagamento de carta frete |
 
 # Sumário
 
