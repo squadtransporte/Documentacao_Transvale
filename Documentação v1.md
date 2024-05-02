@@ -52,6 +52,8 @@
 
 [GET Voucher](#get-voucher)
 
+[Vincular Nota Fiscal ao voucher](#vincula-nota)
+
 # Visão geral
 
 Esta API foi criada para facilitar a comunicação entre o Centro de Manifesto Compartilhado da Transvale e o Maxys.
