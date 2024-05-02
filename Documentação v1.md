@@ -50,6 +50,8 @@
 
 [Estorno de Processo de Caixa](#estorno-de-processos-de-caixa)
 
+[GET Voucher](#get-voucher)
+
 # Visão geral
 
 Esta API foi criada para facilitar a comunicação entre o Centro de Manifesto Compartilhado da Transvale e o Maxys.
@@ -2377,3 +2379,122 @@ Método responsável por estornar os processo de caixas que pertencem a um frete
 | --- | --- |
 | 422 | Erro ao estornar processo de caixa. Verifique. |
 | 500 | Erro ao estornar processo de caixa. |
+---
+
+## GET Voucher
+
+Este método exibe as informações do Voucher e caso seja enviado as tags para consumo, é realizada uma baixa do valor e então retornado o valor atualizado do voucher.
+
+**Método:** **GET**
+
+**Rota:** /integrador-transvale/Cte/getVoucher?idVoucher={idVoucher}&cpfCnpj={cpfMotorista}&registroUtilizacao=true&vlConsumir=100
+
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | idVoucher | S | Varchar2(100) | Id do Voucher |
+| Principal | vlConsumir | N | Number | Valor a ser consumido do Voucher |
+| Principal | registroUtilizacao | N | Varchar2(10) | Verifica se ira ou não usar o Voucher |
+| Principal | cpfCnpj | S | Varchar2(14) | CPF do Motorista |
+
+### Exemplo de Request
+
+```json
+{
+    "idVoucher": "27",
+    "vlConsumir": "1500",
+    "registroUtilizacao": "true",
+    "cpfCnpj": "75372114002"
+}
+```
+
+### Relação de campos - Response
+
+| Nível | Campo               | Tipo de dado   | Descrição                                                                                                       |
+| --- |---------------------|----------------|-----------------------------------------------------------------------------------------------------------------|
+| Principal | DtEmissaoVoucher    | Date           | Data de Emissão do CT-e                                                                                         |
+| Principal | vltotalVoucher      | Number(15,3)   | Valor total do Voucher                                                                                          |
+| Principal | vlDisponivelVoucher | Number(15,3)   | Valor disponível do Voucher                                                                                     |
+| Principal | status              | Varchar2(1)    | Retorna Status “E” Emitido, “C” Cancelado, “P” Utilizado Voucher Parcialmente, “T” Utilizado Voucher Totalmente |
+| Principal | cpfMotorista        | Varchar2(14)   | CPF do Motorista                                                                                                |
+| Principal | nomeMotorista       | Varchar2(60)   | Nome do Motorista                                                                                               |
+| Principal | fotoMotorista       | Varchar2(2000) | Foto do Motorista em base64                                                                                     |
+| Principal | idTransacao         | Number(30)     | Identificador da transação de consumo                                                                           |
+
+### Exemplo de Response
+
+```json
+{
+    "DtEmissaoVoucher": "18/05/23",
+    "vltotalVoucher": 1316,
+    "vlDisponivelVoucher": 0,
+    "status": "E",
+    "cpfMotorista": "75372114002",
+    "nomeMotorista": "LUCAS MICHALSKI MOTORISTA",
+    "fotoMotorista": "LzlqLzRBQVFTa1pKUmdBQkFRQUFBUUFCQUFELzJ3QkRBQUVCQVFFQ"
+    "idTransacao": 123
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Erro não foi possível consultar o voucher |
+| 500 | Erro ao consultar voucher |
+
+## Vincula Nota
+
+Este endpoint vincula uma nota fiscal a um ou mais consumos de voucher, e faz a entrada da nota automaticamente
+
+**Rota:** /integrador-transvale/Cte/cte/vinculaVoucher
+
+### Relação de campos - Request
+
+| Nível | Campo        | Obrigatório | Tipo de dado     | Descrição                                                  |
+| --- |--------------|-------------|------------------|------------------------------------------------------------|
+| Principal | vouchers     | S           | Array de objetos | Lista de vouchers                                          |
+| vouchers | idVoucher    | S           | Number           | Identificador do Voucher a ser vinculado                   |
+| vouchers | chavesAcesso | S           | Array de Varchar | Lista com as chaves de acesso das notas a serem vinculadas |
+| vouchers | transacoes   | S           | Array de number  | Identificador das transações a serem vinculadas a nota     |
+
+### Exemplo de Request
+
+```json
+{
+    "vouchers":[
+        {
+            "idVoucher":1,
+            "chavesAcesso": [
+                "12345678901234567890123456789012345678901234"
+            ],
+            "transacoes": [
+                123,
+                321
+            ]
+        }
+    ]
+}
+```
+
+### **Relação de campos - Response**
+
+| Nível | Campo | Tipo de Dados | Descrição |
+| --- | --- | --- | --- |
+| Principal | code | Number(3) | Código do retorno |
+| Principal | message | String(1000) | Mensagem de retorno |
+
+```json
+{
+	"code": 200,
+	"message": "Sucesso"
+}
+```
+
+### **Possíveis códigos de erro**
+
+| Código | Descrição                                |
+| --- |------------------------------------------|
+| 422 | Erro ao vincular nota fiscal. Verifique. |
+| 500 | Erro ao vincular nota fiscal.            |
