@@ -1,4 +1,4 @@
-# Documentação Centro de Manifesto Compartilhado
+# Documentação API's Transvale
 
 # Histórico de versões
 
@@ -6,6 +6,7 @@
 | --- | --- | --- |
 | 1 | Daniel Schmitz, Mateus Cavalcante, Lucas Michalski | Criação da documentação |
 | 2 | Daniel Schmitz | Incluído endpoints para pagamento de carta frete |
+| 3 | Daniel Schmitz | Incluído endpoint para estorno de processo de caixa |
 
 # Sumário
 
@@ -46,6 +47,8 @@
 [POST Pagamento CT-e](#post-postpagamentocte)
 
 [POST Processa Lote](#post-processalote)
+
+[Estorno de Processo de Caixa](#estorno-de-processos-de-caixa)
 
 # Visão geral
 
@@ -2328,3 +2331,49 @@ Este método irá realizar a amarração dos processos que forem enviados em um 
 | --- | --- |
 | 422 | Erro ao gravar relação ou executar o processo de caixa. Verifique |
 | 500 | Erro ao gravar relação ou executar o processo de caixa. Erro. |
+
+---
+## Estorno de Processos de Caixa
+
+Método responsável por estornar os processo de caixas que pertencem a um frete lançado no sistema.
+
+**Método:** POST
+
+**Rota:** /pagamentoCte/postEstorno
+
+## **Relação de campos - Request**
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | idProcesso | S | String(12) | Id do processo retornado ao gera-lo via API. |
+| Principal | documentoUsuario | S | String(14) | CPF/CNPJ do usuário que está efetuando o estorno. |
+| Principal | motivoCancelamento | S | Number(5) | Código do motivo do cancelamento. |
+
+```json
+{
+  "idProcesso": "009900000736",
+  "documentoUsuario": "21078384000135",
+  "motivoCancelamento": 1
+}
+```
+
+## **Relação de campos - Response**
+
+| Nível | Campo | Tipo de Dados | Descrição |
+| --- | --- | --- | --- |
+| Principal | code | Number(3) | Código do retorno |
+| Principal | message | String(1000) | Mensagem de retorno |
+
+```json
+{
+	"code": 200,
+	"message": "Sucesso"
+}
+```
+
+## **Possíveis códigos de erro**
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Erro ao estornar processo de caixa. Verifique. |
+| 500 | Erro ao estornar processo de caixa. |
