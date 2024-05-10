@@ -2296,11 +2296,12 @@ Este método irá realizar a amarração dos processos que forem enviados em um 
 
 | Nível | Campo | Obrigatório | Tipo de dado | Descrição |
 | --- | --- | --- | --- | --- |
-| Principal | processos | S | Array |  |
-| processos |  |  |  | Dentro desse array é enviado todos os idProcesso que são retornados no postPagamento |
+| Principal | processos | S | Array | Dentro desse array é enviado todos os idProcesso que são retornados no postPagamento |
+| Principal | formaPagamento | S | String(15) | Forma de pagamento |
 
 ```json
 {
+    "formaPagamento": "DINHEIRO",
      "processos": [
           "000500103837",
           "000500103836"
