@@ -54,6 +54,8 @@
 
 [Vincular Nota Fiscal ao voucher](#vincula-nota)
 
+[Gera fatura Voucher](#gera-fatura-voucher)
+
 # Visão geral
 
 Esta API foi criada para facilitar a comunicação entre o Centro de Manifesto Compartilhado da Transvale e o Maxys.
@@ -2501,3 +2503,55 @@ Este endpoint vincula uma nota fiscal a um ou mais consumos de voucher, e faz a 
 | --- |------------------------------------------|
 | 422 | Erro ao vincular nota fiscal. Verifique. |
 | 500 | Erro ao vincular nota fiscal.            |
+
+
+# Gera Fatura Voucher
+
+## POST geraFaturaVoucher
+
+Esse método fará com que gere uma fatura no maxys sobre a nota fiscal vinculada ao voucher
+
+**Método:** POST
+
+**Rota:** /integrador-transvale/Cte/geraFaturaVoucher
+
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| chavesAcesso | chavesAcesso | S | Varchar2(100) | Chave de acesso usada na emissão da nota do voucher |
+
+### Exemplo de Request
+
+```json
+{
+    "chavesAcesso": [
+        "15230510197621000241550010000592861000379529"
+    ]
+}
+```
+
+### Relação de campos - Response
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+| Principal | idProcesso | Number(8) | Número do processo gerado |
+| Principal | idEmpresa | Number(4) | Empresa do processo gerado |
+
+### Exemplo de Response
+
+```json
+{
+    "code": 200,
+    "message": "Sucesso",
+    "idProcesso": 1053,
+    "idEmpresa": 99
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Erro ao gerar fatura do voucher |
+| 500 | Falha ao processar a requisição de gerar a fatura do voucher |
