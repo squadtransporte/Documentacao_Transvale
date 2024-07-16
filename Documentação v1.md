@@ -2520,6 +2520,7 @@ Esse método fará com que gere uma fatura no maxys sobre a nota fiscal vinculad
 | Nível | Campo | Obrigatório | Tipo de dado | Descrição |
 | --- | --- | --- | --- | --- |
 | Principal | chavesAcesso | S | String(100) | Chave de acesso usada na emissão da nota do voucher |
+| Principal | formaPagamento | S | String(2) | Forma de Pagamento |
 | Principal | cpfCnpjBeneficiario | S | String(14) | CPF/CNPJ do beneficiário do processo |
 | Principal | dataPagamento | S | String(10) | Data de pagamento para o processo |
 
@@ -2528,6 +2529,7 @@ Esse método fará com que gere uma fatura no maxys sobre a nota fiscal vinculad
 ```json
 {
     "chavesAcesso": ["15230510197621000241550010000592841000379508"],
+    "formaPagamento": "CA",
     "cpfCnpjBeneficiario": "12332144411",
     "dataPagamento": "25/06/2024"
 }
