@@ -2559,3 +2559,68 @@ Esse método fará com que gere uma fatura no maxys sobre a nota fiscal vinculad
 | --- | --- |
 | 422 | Erro ao gerar fatura do voucher |
 | 500 | Falha ao processar a requisição de gerar a fatura do voucher |
+
+# POST encerraMdfe
+
+Esse método fará com que encerre uma MDFE
+
+**Método:** POST
+
+**Rota:** /integrador-transvale/Cte/encerraMdfe
+
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | empresaCte | S | Number(4) | Empresa do CTe |
+| Principal | lancamentoCte | S | Number(6) | Lançamento do CTe |
+| Principal | serieCte | S | String(1) | Série do CTe |
+| Principal | fatesCte | S | String(1) | Tipo faturamento do CTe |
+| Principal | empresaMdfe | S | Number(4) | Empresa MDFE |
+| Principal | numeroMdfe | S | Number(6) | Núemro MDFE |
+| Principal | serieMdfe | S | Number(1) | Série MDFE |
+
+### Exemplo de Request
+
+```json
+{
+    "cte": [
+        {
+            "empresaCte": 1,
+            "lancamentoCte": 1,
+            "serieCte": "1",
+            "fatesCte": "1"
+        }
+    ],
+    "mdfe": [
+        {
+            "empresaMdfe": 1,
+            "numeroMdfe": 1,
+            "serieMdfe": 1
+        }
+    ]
+}
+```
+
+### Relação de campos - Response
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+| Principal | code | String | 200 (Sucesso) |
+| Principal | message | String | Sucesso |
+
+### Exemplo de Response
+
+```json
+{
+    "code": 200,
+    "message": "Sucesso"
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Erro interno |
+| 500 | Falha ao processar a requisição |
