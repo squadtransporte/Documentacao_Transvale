@@ -56,6 +56,8 @@
 
 [Gera fatura Voucher](#gera-fatura-voucher)
 
+[POST Encerra MDFE](#POST-encerraMdfe)
+
 # Visão geral
 
 Esta API foi criada para facilitar a comunicação entre o Centro de Manifesto Compartilhado da Transvale e o Maxys.
