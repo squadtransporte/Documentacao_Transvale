@@ -7,6 +7,7 @@
 | 1 | Daniel Schmitz, Mateus Cavalcante, Lucas Michalski | Criação da documentação |
 | 2 | Daniel Schmitz | Incluído endpoints para pagamento de carta frete |
 | 3 | Daniel Schmitz | Incluído endpoint para estorno de processo de caixa |
+| 4 | Simon Luca | Incluído endpoint para quitação de CFe |
 
 # Sumário
 
@@ -56,7 +57,9 @@
 
 [Gera fatura Voucher](#gera-fatura-voucher)
 
-[POST Encerra MDFE](#POST-encerraMdfe)
+[POST Encerra MDFE](#post-encerramdfe)
+
+[POST Quitar CFe](#post-quitar-cfe)
 
 # Visão geral
 
@@ -2626,3 +2629,56 @@ Esse método fará com que encerre uma MDFE
 | --- | --- |
 | 422 | Erro interno |
 | 500 | Falha ao processar a requisição |
+
+# Quitar CFe
+
+## POST quitar CFe
+
+Este método irá efetuar a liberação da parcela da CFe para que possa ser quitada.
+
+**Método:** POST
+
+**Rota:** /acertoCfe/quitar
+
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | chaveDocumento | S | String(17) | Chave retornada no getPagamento e getPagamentoCte  |
+| Principal | usuario | S | String(14) | CPF do usuário que está fazendo a requisição |
+| Principal | numeroParcela | S | Number (4) | Número da parcela que será liberada |
+
+### Exemplo de Request
+
+```json
+{
+    "chaveDocumento": "00050008042000031",
+    "usuario": "61420325019",
+    "numeroParcela": 1
+}
+```
+
+### Relação de campos - Response
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+| Principal | code | Number | Código retorno HTTP |
+| Principal | message | String | Mensagem de retorno |
+
+### Exemplo de Response
+
+```json
+{
+    "code": 200,
+    "message": "Sucesso."
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 404 | Não foram encontradas ordens de coleta para os filtros informados. |
+| 500 | Erro interno do servidor. Verificar a tag message |
+
+---
