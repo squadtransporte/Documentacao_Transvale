@@ -116,7 +116,6 @@ Este método gera um adiantamento no maxys, em seguida monta o processo de caixa
 
 1. Poderá ser somente montado o processo de caixa, sem necessidade de execução.
 2. Não é obrigatório enviar Contas a Pagar e Receber, com apenas um dos dois já será possível montar/executar o processo.
-3. Será possível executar somente processos que derem Zerados.
 
 ---
 
