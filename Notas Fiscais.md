@@ -220,3 +220,185 @@ Esse método permite consultas todas as notas que existem no MaxysXML.
 | --- | --- |
 | 400 | Bad Request |
 | 500 | Falha ao processar sua requisição de consultas de historico |
+
+---
+---
+
+# Emite Nota Físcal
+
+### Este Método irá Escriturar Notas Físcais e quando houver despesas frota realizar o lançamento.
+
+---
+
+**Método:** POST
+
+**Rota:** notaFiscal/postEmitirNotaEntrada
+
+---
+
+**Relação de Campos - Body Request.**
+
+| Nível | Campo | Obrigatório | Tipo de Dado | Descrição |
+| --- | --- | --- | --- | --- |
+| listaNotas | notas |  | List Object | Lista contendo as notas a serem escrituradas |
+| notas | filial | S | Number | Código da Empresa da Nota |
+| notas | usuarioLancamento | S | String | Usuário do lançamento da Nota |
+| notas | chaveAcesso | S | String | Chave de acesso da Nota a ser escriturada |
+| notas | cpfCnpjFornecedor | S | Number | CPF/CNPJ do Clifor da Nota |
+| notas | codigoEndereco | S | Number | Código do endereço do Clifor |
+| notas | numeroNota | S | Number | Número da Nota fornecedor |
+| notas | serieNota | S | String | Série da Nota fornecedor |
+| notas | especieNota | S | String | Espécie da Nota fornecedor |
+| notas | dataEmissao | S | Date | Data de emissão da Nota  |
+| notas | formaPagamento | S | String | Forma de pagametno |
+| notas | dataVencimento | S | Date | Data de vencimento da Nota |
+| notas | valorDespesasAcessorias | N | Number | Valor de despesas quando necessário |
+| notas | valorDesconto | N | Number | Valor de desconto quando necessário |
+| notas | valorNota | S | Number | Valor total da nota |
+| notas | centroCusto | S - Caso não haja rateio | Number | Centro de Custo da Nota |
+| notas | itens |  | List Object | Lista contendo os Itens |
+| itens | item | S | Number | Código do item |
+| itens | movimentacao | S | Number | Código da Movimentação |
+| itens | negocio | S | Number | Código do Negócio |
+| itens | cfo | S | Number | Código CFOP |
+| itens | tipoUnidade | S | String | Unidade de medida do item |
+| itens | peso | S - caso não haja quantidade | Number | Peso do item |
+| itens | quantidade | S - caso não haja peso | Number | Quantidade do item |
+| itens | valorUnitario | S | Number | Valor unitário do item |
+| itens | valorTotal | S  | Number | Valor total do item |
+| itens | valorDesconto | N | Number | Valor desconto do item |
+| itens | origemMercadoria | N | Number | Origem da mercadoria |
+| itens | rateioCentroCusto |  | List Object | Lista contendo o rateio de centro de custos por item |
+| rateioCentroCusto | centroCusto | S  - Caso não haja Centro de Custo no nível da nota | Number | Código do Centro de Custo |
+| rateioCentroCusto | negocio | S  - Caso não haja Centro de Custo no nível da nota | Number | Código do negócio |
+| rateioCentroCusto | movimentacao | S  - Caso não haja Centro de Custo no nível da nota | Number | Código da movimentação |
+| rateioCentroCusto | percentual | S  - Caso não haja Centro de Custo no nível da nota | Number | Percentual do rateio |
+| rateioCentroCusto | valor | S  - Caso não haja Centro de Custo no nível da nota | Number | Valor do rateio para o centro de custo |
+| notas | despesaFrota |  | List Object | Lista contendo despesa frota da Nota |
+| despesaFrota | tipoDespesa | N | Number | Código da despesa |
+| despesaFrota | competencia | N | Number | Mês ano competência Ex: 01/2024 |
+| despesaFrota | placa | N | String | Placa do veículo |
+| despesaFrota | kmVeiculo | N | Number | Quilometragem do veiculo |
+
+## JSON Exemplo Body Request
+
+```json
+[
+  {
+    "filial": 84,
+    "usuarioLancamento": "MAX",
+    "chaveAcesso": "41241000095441300043550010000000561000000567",
+    "cpfCnpjFornecedor": "95441300043",
+    "codigoEndereco": 1,
+    "numeroNota": 1233219,
+    "serieNota": "1",
+    "especieNota": "NFE",
+    "dataEmissao": "22/10/2024",
+    "formaPagamento": "CA",
+    "condicaoPagamento": 800,
+    "dataVencimento": "25/10/2024",
+    "valorDespesasAcessorias": 123,
+    "valorDesconto": 1.5,
+    "valorNota": 123.45,
+    "centroCusto":null,
+    "itens": [
+      {
+        "item": 3210,
+        "movimentacao": 2303,
+        "negocio": 1,
+        "cfo": 1199,
+        "tipoUnidade": "UN",
+        "peso": 30000,
+        "quantidade": 3,
+        "valorUnitario": 123,
+        "valorTotal": 123,
+        "valorDesconto": 0,
+        "origemMercadoria": 1,
+        "rateioCentroCusto": [
+          {
+            "centroCusto": 1,
+            "negocio": 1,
+            "movimentacao": 2303,
+            "percentual": 10,
+            "valor": 100
+          }
+        ]
+      }
+    ],
+    "despesaFrota": {
+      "tipoDespesa": null,
+      "competencia": "",
+      "placa": "",
+      "kmVeiculo": null
+    }
+  }
+]
+```
+
+---
+
+**Relação de Campos - Response Sucesso**
+
+| Campo | Tipo de Dado | Descrição |
+| --- | --- | --- |
+| code | Number | Código do Response |
+| message | String | Mensagem do Response |
+| notas [{ | List Object | Lista com as notas emitidas |
+| filial | Number | Empresa da Nota |
+| cpfCnpjFornecedor | Number | Clifor da Nota |
+| chaveAcesso | Number | Chave de acesso da nota |
+| numeroNota | Number | Número da Nota |
+| serieNota | String | Série da Nota |
+| especieNota | String | Espécie da Nota |
+| dataEmissao | Date | Data de emissão da Nota |
+| lancamento }] | Number | Lançamento gerado na emissão da Nota |
+
+**Relação de Campos - Response Erro**
+
+| Campo | Tipo de Dado | Descrição |
+| --- | --- | --- |
+| code | Number | Código do Response |
+| cause | String | Causa do erro para melhor rastreio |
+| message | String | Mensagem do Response |
+
+## JSON Exemplo Response
+
+---
+
+Possíveis Códigos de Retorno
+
+| Código | Descrição |
+| --- | --- |
+| 200 | Sucesso na transação |
+| 400,405,500 | Erro ao emitira nota físcal |
+
+### 1 - Nota Físcal Emitida
+
+```json
+{
+    "code": 200,
+    "message:": "Sucesso",
+    "notas": [
+        {
+            "filial": 84,
+            "cpfCnpjFornecedor": "95441300043",
+            "chaveAcesso": "41241000095441300043550010000000561000000567",
+            "numeroNota": 1233219,
+            "serieNota": "1",
+            "especieNota": "NFE",
+            "dataEmissao": "22/10/2024",
+            "lancamento": 203923
+        }
+    ]
+}
+```
+
+### 3- Erro
+
+```json
+	{
+		"code": 500,
+		"cause": "Erro ao lancar a Nota.",
+		"message": "MOVIMENTACAO 108 NAO E DO TIPO CC"
+	}
+```
