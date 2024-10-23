@@ -1,3 +1,14 @@
+| Versão | Modificado por | Alterações |
+| --- | --- | --- |
+| 1 | Frederico Ferro | Juntando documentação de consulta de notas e criada nova para geração de notas fiscais |
+
+# Sumário
+
+[Listar todas os documentos do MaxysXML](#listar-todas-os-documentos-do-maxysXML)
+
+[Emite Nota Fiscal](#emite-nota-fiscal)
+
+---
 # Listar todas os documentos do MaxysXML
 
 Esse método permite consultas todas as notas que existem no MaxysXML.
@@ -103,7 +114,7 @@ Esse método permite consultas todas as notas que existem no MaxysXML.
 
 ### Exemplo Response
 
-```jsx
+```json
 {
     "code": 200,
     "message": "Sucesso",
