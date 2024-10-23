@@ -6,7 +6,7 @@
 
 [Listar todas os documentos do MaxysXML](#listar-todas-os-documentos-do-maxysXML)
 
-[Emite Nota Fiscal](#emite-nota-fiscal)
+[Emite Nota Fiscal de Entrada](#emite-nota-fiscal-de-entrada)
 
 ---
 # Listar todas os documentos do MaxysXML
@@ -224,7 +224,7 @@ Esse método permite consultas todas as notas que existem no MaxysXML.
 ---
 ---
 
-# Emite Nota Físcal
+# Emite Nota Fiscal de Entrada
 
 ### Este Método irá Escriturar Notas Físcais e quando houver despesas frota realizar o lançamento.
 
