@@ -224,6 +224,7 @@ Este método gera um adiantamento no maxys, em seguida monta o processo de caixa
 | --- | --- | --- |
 | code | Number | Código do Response |
 | message | String | Mensagem do Response |
+| detalhe | String | Detalhes da Mensagem |
 
 ## JSON Exemplo Response
 
@@ -266,6 +267,7 @@ Possíveis Códigos de Retorno
 ```json
 {
 	"code": 400,
-	"message": "¥[MONTA_EXEC_PROCCAIXA]¥ O valor a ser utilizado (500,00) para a empresa (5), parcela (0), lancamento (10321), clifor (1095935), tipo de contas (292), não pode ser maior que seu saldo (0,00).¢MPM=MAX038868¢"
+	"message": "Usuário com CPF/CNPJ (00882770000115) não encontrado, Verifique!",
+	"detalhe": "¥[MONTA_EXEC_PROCCAIXA]¥ Usuário com CPF/CNPJ (00882770000115) não encontrado, Verifique!¢MPM=MAX033803¢"
 }
 ```
