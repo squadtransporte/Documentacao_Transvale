@@ -8,6 +8,7 @@
 | 2 | Daniel Schmitz | Incluído endpoints para pagamento de carta frete |
 | 3 | Daniel Schmitz | Incluído endpoint para estorno de processo de caixa |
 | 4 | Simon Luca | Incluído endpoint para quitação de CFe |
+| 5 | Simon Luca | Incluído endpoint para geração de Fatura |
 
 # Sumário
 
@@ -60,6 +61,8 @@
 [POST Encerra MDFE](#post-encerramdfe)
 
 [POST Quitar CFe](#post-quitar-cfe)
+
+[POST Gerar Fatura](#post-gerar-fatura)
 
 # Visão geral
 
@@ -2682,3 +2685,95 @@ Este método irá efetuar a liberação da parcela da CFe para que possa ser qui
 | 500 | Erro interno do servidor. Verificar a tag message |
 
 ---
+
+# Gerar Fatura
+
+## POST Gerar Fatura
+
+Este método irá gerar a fatura com base nos documentos repassados e retornar um layout de fatura para recebimento.
+
+**Método:** POST
+
+**Rota:** /recebimentoCte/postRecebimento
+
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | cliente | S | Number | Código do cliente para geração da Fatura  |
+| Principal | filialFatura | S | Number | Filial para geração da Fatura  |
+| Principal | codigoBanco | S | Number | Código do banco para geração da Fatura  |
+| Principal | codigoAgencia | S | Number | Código da agência para geração da Fatura  |
+| Principal | formaPagamento | S | String(5) | Forma de pagamento da Fatura  |
+| Principal | contaCorrente | S | String(20) | Código da conta corrente  |
+| Principal | dataEmissao | N | String(10) | Data de emissão da fatura |
+| Principal | dataVencimento | N | String(10) | Data de vencimento da fatura |
+| Principal | documentos | S | Array de Objetos | Relação de documentos para gerar a Fatura |
+| documentos | empresa | S | Number | Código da empresa do documento |
+| documentos | lancamento | S | Number | Número de lançamento do documento |
+| documentos | serie | S | Number | Série do documento |
+
+### Exemplo de Request
+
+```json
+{
+		"cliente": 909980,
+		"filialFatura": 99,
+		"codigoBanco": 1,
+		"codigoAgencia": 1,
+		"formaPagamento": "CA",
+		"contaCorrente": "0033",
+	
+		"documentos": [
+				{
+						"empresa": 99,
+						"lancamento": 2051,
+						"serie": "4"
+				},
+				{
+						"empresa": 99,
+						"lancamento": 2067,
+						"serie": "4"
+				},
+				{
+						"empresa": 99,
+						"lancamento": 2072,
+						"serie": "4"
+				}
+		]
+}
+```
+
+### Relação de campos - Response
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+| Principal | code | Number | Código retorno HTTP |
+| Principal | message | String | Mensagem de retorno |
+| Principal | numeroFatura | Number | Código da fatura gerada |
+| Principal | FATURA | Objeto | Objeto com informações da geração do layout da Fatura |
+| FATURA | url | String | Url para geração do PDF do layout de fatura |
+| FATURA | id | String | Código identificador |
+| FATURA | mensagemErro | String | Mensagem de erro caso ocorra durante a geração da Fatura |
+
+### Exemplo de Response
+
+```json
+{
+	"code": 200,
+	"message": "Sucesso",
+	"numeroFatura": 185,
+	"FATURA": {
+		"url": "HTTP://WINVM-SQUADTRANSP/MAXICONREPORT/EasyPrint?c=%5C%5Cwinvm-squadtransp%5Cmaxicon%5CMaxicon%5CPrincipal%5CDFE023.rpx&m=ST_ATUALIZA=N%7CNR_SID=46592575&exportar=true&t=PDF",
+		"id": "46592575",
+		"mensagemErro": []
+	}
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Erro interno |
+| 500 | Falha ao processar a requisição |
