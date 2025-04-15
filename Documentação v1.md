@@ -9,6 +9,7 @@
 | 3 | Daniel Schmitz | Incluído endpoint para estorno de processo de caixa |
 | 4 | Simon Luca | Incluído endpoint para quitação de CFe |
 | 5 | Simon Luca | Incluído endpoint para geração de Fatura |
+| 6 | Simon Luca | Incluído endpoint para geração de Despesa |
 
 # Sumário
 
@@ -63,6 +64,8 @@
 [POST Quitar CFe](#post-quitar-cfe)
 
 [POST Gerar Fatura](#post-gerar-fatura)
+
+[POST Gerar Despesa](#post-gerar-despesa)
 
 # Visão geral
 
@@ -2777,3 +2780,100 @@ Este método irá gerar a fatura com base nos documentos repassados e retornar u
 | --- | --- |
 | 422 | Erro interno |
 | 500 | Falha ao processar a requisição |
+
+---
+
+# Gerar Despesa
+
+## POST Gerar Despesa
+Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio por centro de custo.
+
+**Método:** POST
+
+**Rota:** /recebimentoCte/postRecebimento
+
+### Relação de campos - Request
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | dataCompetencia | S | String(10) | Data de competência da despesa  |
+| Principal | codigoFilial | S | Number | Filial para geração da despesa  |
+| Principal | numeroPlaca | S | String(10) | Número da placa do veículo  |
+| Principal | codigoRota | S | Number | Código da rota  |
+| Principal | codigoMotorista | S | String(5) | Código do motorista |
+| Principal | codigoNegocio | S | String(20) | Código do negocio  |
+| Principal | numeroDocumento | N | String(10) | Número do documento da despesa |
+| Principal | horimetroRefrigerador | N | String(10) | Horímetro do bau refrigerador |
+| Principal | dataLancamento | S | String(10) | Data de lançamento da despesa |
+| Principal | kilometragemFinal | S | Number | Kilometragem final do veículo |
+| Principal | condicaoPagamento | S | Number | Condição de pagamento |
+| Principal | usuario | N | String(5) | Código do usuário do lançamento |
+| Principal | centrosCusto | S | Array de Objetos | Relação de centros de custo que será gerada a despesa |
+| centrosCusto | codigo | S | Number | Código do centro de custo |
+| Principal | itens | S | Array de Objetos | Relação de Itens da despesa |
+| itens | codigoDespesa | N | Number | Código da despesa |
+| itens | pesoAtendido | S | Number | Peso do item |
+| itens | codigoMovimentacao | S | Number | Código da movimentação |
+| itens | valor | S | Number | Valor total do item |
+| itens | observacao | N | String(60) | Observação do item |
+| itens | codigoItem | S | Number | Código do item |
+
+### Exemplo de Request
+
+```json
+{
+          "dataCompetencia": "04/2025",
+          "codigoFilial": 99,
+          "numeroPlaca": "SEM0J22",
+          "codigoRota": 280,
+          "codigoMotorista": 403300,
+          "codigoNegocio": 1,
+          "numeroDocumento": "244413",
+          "horimetroRefrigerador": "32",
+          "dataLancamento": "15/04/2025",
+          "kilometragemFinal": 5.300,
+          "usuario": "SLR",
+          "centrosCusto": [
+                           {
+                            "codigo": 1
+                           }
+                          ],
+          "itens": [
+                    {
+                     "codigoDespesa": null,
+                     "pesoAtendido": 30.000,
+                     "codigoMovimentacao": 3000,
+                     "valor": 10000,
+                     "observacao": "OBSERVACAO DE TESTE",
+                     "codigoItem": 1
+                    }
+                   ]
+}
+```
+
+### Relação de campos - Response
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+| Principal | code | Number | Código retorno HTTP |
+| Principal | message | String | Mensagem de retorno |
+| Principal | lancamentoDespesas | String(100) | Números dos lançamentos das despesas separados por "," |
+
+### Exemplo de Response
+
+```json
+{
+  "code" : 200,
+  "message" : "Sucesso",
+  "lancamentoDespesas" : "181,182"
+}
+```
+
+### Possíveis códigos de erro
+
+| Código | Descrição |
+| --- | --- |
+| 422 | Erro interno |
+| 500 | Falha ao processar a requisição |
+
+---
