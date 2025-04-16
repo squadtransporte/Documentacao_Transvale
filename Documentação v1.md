@@ -2790,7 +2790,7 @@ Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio p
 
 **Método:** POST
 
-**Rota:** /recebimentoCte/postRecebimento
+**Rota:** /despesa/postDespesa
 
 ### Relação de campos - Request
 
