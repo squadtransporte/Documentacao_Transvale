@@ -1,12 +1,15 @@
 | Versão | Modificado por | Alterações |
 | --- | --- | --- |
 | 1 | Matheus Gobo | Juntando documentação de Geração de Adiantamentos com a nova integração de montagem e execução de processo de caixa |
+| 2 | Matheus Gobo | Adicionando documentação de novo Endpoint "Gerar Extra Fornecedor"|
 
 # Sumário
 
 [Insere Adiantamento](#insere-adiantamento)
 
 [Monta ou Executa Processo de Caixa](#monta-ou-executa-processo-de-caixa)
+
+[Gerar Extra Fornecedor](#gerar-extra-fornecedor)
 
 ---
 
@@ -269,5 +272,146 @@ Possíveis Códigos de Retorno
 	"code": 400,
 	"message": "Usuário com CPF/CNPJ (00882770000115) não encontrado, Verifique!",
 	"detalhe": "¥[MONTA_EXEC_PROCCAIXA]¥ Usuário com CPF/CNPJ (00882770000115) não encontrado, Verifique!¢MPM=MAX033803¢"
+}
+```
+---
+
+---
+# Gerar Extra Fornecedor
+
+### Este Método irá gerar documentos extra fornecedores (FNX001) e retornar o processo de caixa montado.
+
+1. Poderá ser gerado um ou mais lançamentos extra fornecedor.
+2. Será possível gerar lançamentos de Pagamento ou Recebimento, mas não os 2 simultaneamente.
+
+---
+
+**Método:** POST
+
+**Rota:** financeiro/postGeraExtraFornecedor
+
+---
+
+**Relação de Campos - Body Request.**
+
+| Nível | Campo | Obrigatório | Tipo de Dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | cdEmpresa | S | Number(4) | Código da empresa de montagem do processo |
+| Principal | cpfCnpjUsuario | S | String(14) | CPF/CNPJ do Usuário de Montagem ou Execução |
+| Principal | dtMovimento | S | Date | Data de Movimento informada no FNX001. Formato aceito YYYY/MM/DD |
+| Principal | tpOperacao | S | String (ENUM) | Como no FNX001 de ser definida a operação antes de iniciar o lançamento. Valores Aceitos “PAGAMENTO”, “RECEBIMENTO’ |
+| Principal | tpPedido | S | String(2) | Tipo do Pedido que esteja vinculado ao FNX001 Exemplo: “EX” |
+| Principal | tpContas | S | Number(5) | Tipo contas TFN004 com Identificador do tipo “E - Extra Fornecedor” para operação PAGAMENTO o tipo de contas deve ser >= 200, para operação RECEBIMENTO deve ser < 200 |
+| Principal | lancamentos | S | Array Object |  |
+| lancamentos | cdEmpresa | S | Number(4) | Empresa do Lançamento |
+| lancamentos | cdHistorico | S | Number(5) | Histórico do Lançamento |
+| lancamentos | nrDocumento | N | Number(10) | Número do documento |
+| lancamentos | dtVencimento | S | Date | Data de vencimento do lançamento. Formato aceito YYYY/MM/DD |
+| lancamentos | cdClifor | S | Number(7) | Clifor do lançamento (Não são permitidos lançamentos para clifors diferentes) |
+| lancamentos | vlLancamento | S | Number(15,2) | Valor do lançamento |
+| lancamentos | dsComplemento | N | String(90) | Descrição do Complemento, caso não informado como o FNX001 é utlizado a descrição do Histórico. |
+| lancamentos | cdCentroCusto | N | Number(5) | Centro de custo do lançamento, só pode e deve ser informado quando a conta do histórico é de Centro de custo |
+| lancamentos | cdNegocio | S | Number(4) | Negócio do lançamento. |
+| Principal | dadosProcesso | S | Object |  |
+| dadosProcesso | cdFormaPagto | S | String(2) | Código da forma de pagamento. |
+| dadosProcesso | cdBanco | N | Number(3) | Código do banco cadastrado para o clifor no TCF001. |
+| dadosProcesso | cdAgencia | N | Number(6) | Código da Agência cadastrada para o clifor no TCF001. |
+| dadosProcesso | nrConta | N | String(10) | Número da conta cadastrada para o clifor no TCF001. |
+| dadosProcesso | nrDigitoConta | N | String(2) | Digito Verificador da Conta |
+| dadosProcesso | cdChavePix | N | String(77) | Chave pix cadastrada para o clifor no TCF001. |
+
+## JSON Exemplo Body Request
+
+```json
+{
+	"cdEmpresa": 84,
+	"cpfCnpjUsuario": "42785447239",
+	"dtMovimento": "2025/07/15",
+	"tpOperacao": "PAGAMENTO",
+	"tpPedido": "EX",
+	"tpContas": 290,
+	"lancamentos": [
+		{
+			"cdEmpresa": 84,
+			"cdHistorico": 27941,
+			"nrDocumento": 1913,
+			"dtVencimento": "2025/08/11",
+			"cdClifor": 914436,
+			"vlDocuemnto": 100,
+			"dsComplemento": "Teste de Complemento",
+			"cdCentroCusto": null,
+			"cdNegocio": 1
+		},
+		{
+			"cdEmpresa": 84,
+			"cdHistorico": 27941,
+			"nrDocumento": null,
+			"dtVencimento": "2025/08/12",
+			"cdClifor": 914436,
+			"vlDocuemnto": 20.50,
+			"dsComplemento": null,
+			"cdCentroCusto": null,
+			"cdNegocio": 5
+		}
+	],
+	"dadosProcesso": {
+		"cdFormaPagto": "CC",
+		"cdBanco": null,
+		"cdAgencia": null,
+		"nrConta": null,
+		"nrDigitoConta": null,
+		"cdChavePix": "+5545991476372"
+	}
+}
+```
+
+---
+
+**Relação de Campos - Response Sucesso**
+
+| Campo | Tipo de Dado | Descrição |
+| --- | --- | --- |
+| code | Number | Código do Response |
+| message | String | Mensagem do Response |
+| cdEmprProc | Number | Empresa do Processo de caixa |
+| nrProcesso | Number | Número do processo de caixa gerado |
+
+**Relação de Campos - Response Erro**
+
+| Campo | Tipo de Dado | Descrição |
+| --- | --- | --- |
+| code | Number | Código do Response |
+| message | String | Mensagem do Response |
+| detalhe | String | Detalhes da Mensagem |
+
+## JSON Exemplo Response
+
+---
+
+Possíveis Códigos de Retorno
+
+| Código | Descrição |
+| --- | --- |
+| 200 | Sucesso na transação |
+| 400 | Erro ao montar Processo de Caixa. ou inserir lançamento Extra fornecedor. Verificar a tag message. |
+
+### 1 - Processo de caixa somente Montado
+
+```json
+{
+	"code": 200,
+	"message": "Sucesso",
+	"cdEmprProc": 84,
+	"nrProcesso": 127260
+}
+```
+
+### 2- Erro
+
+```json
+{
+	"code": 400,
+	"message": "Não deve ser informado o Centro de Custo pois a Conta Contábil do Histórico (27941) não é de Centro de Custo. Verifique o programa TCB004.",
+	"detalhe": "¥[GERA_EXTRA_FORNECEDOR]¥ Não deve ser informado o Centro de Custo pois a Conta Contábil do Histórico (27941) não é de Centro de Custo. Verifique o programa TCB004.¢MPM=MAX039441¢"
 }
 ```
