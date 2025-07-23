@@ -337,7 +337,7 @@ Possíveis Códigos de Retorno
 			"nrDocumento": 1913,
 			"dtVencimento": "2025/08/11",
 			"cdClifor": 914436,
-			"vlDocuemnto": 100,
+			"vlLancamento": 100,
 			"dsComplemento": "Teste de Complemento",
 			"cdCentroCusto": null,
 			"cdNegocio": 1
@@ -348,7 +348,7 @@ Possíveis Códigos de Retorno
 			"nrDocumento": null,
 			"dtVencimento": "2025/08/12",
 			"cdClifor": 914436,
-			"vlDocuemnto": 20.50,
+			"vlLancamento": 20.50,
 			"dsComplemento": null,
 			"cdCentroCusto": null,
 			"cdNegocio": 5
