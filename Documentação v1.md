@@ -429,7 +429,7 @@ Este método insere a ordem de coleta na fila para emissão. A partir desse mome
 | Documentos | subSerieDoc | S | String (2) | Subsérie do documento  |
 |  |  |  |  |  |
 | Principal | valorTarifaAtualizado | N | Number (15,2) | Valor da tarifa a ser atualizada, caso o valor da tarifa seja diferente da negociada no contrato  |
-
+| Principal | observacaoCtrc	    | N | String(2000)  | Observação que será exibida no CTRC |
 ### TABELA 01 - Códigos de tipos de serviços (tipoServico/tipoDocumento)
 
 | Código | Descrição |
