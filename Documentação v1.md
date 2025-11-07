@@ -2881,9 +2881,9 @@ Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio p
 ---
 # Excluir Despesa
 
-**POST Excluir Despesa**
+## POST Excluir Despesa
 
-Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio por centro de custo.
+Este método irá excluir uma despesa de frota.
 
 **Método:** POST
 
