@@ -67,6 +67,8 @@
 
 [POST Gerar Despesa](#post-gerar-despesa)
 
+[POST Excluir Despesa](#post-excluir-despesa)
+
 # Visão geral
 
 Esta API foi criada para facilitar a comunicação entre o Centro de Manifesto Compartilhado da Transvale e o Maxys.
@@ -2877,3 +2879,54 @@ Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio p
 | 500 | Falha ao processar a requisição |
 
 ---
+# Excluir Despesa
+
+**POST Excluir Despesa**
+
+Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio por centro de custo.
+
+**Método:** POST
+
+**Rota:** /despesa/postExcluirDespesa
+
+**Relação de campos - Request**
+
+| Nível | Campo | Obrigatório | Tipo de dado | Descrição |
+| --- | --- | --- | --- | --- |
+| Principal | codigoFilial | S | Number | Filial onde foi gerado a despesa |
+| Principal | numeroLancamento | S | Number | Numero do lançamento da despesa |
+| Principal | cpfCnpjUsuario | N | String(10) | CPF/CNPJ do usuário a deletar despesa |
+
+**Exemplo de Request**
+
+```
+{    
+ "codigoFilial": 84,   
+ "numeroLancamento": 10044,    
+ "cpfCnpjUsuario": "00000000000"
+}
+```
+
+**Relação de campos - Response**
+
+| Nível | Campo | Tipo de dado | Descrição |
+| --- | --- | --- | --- |
+| Principal | code | Number | Código retorno HTTP |
+| Principal | message | String | Mensagem de retorno |
+| Principal | lancamentoDespesas | String(100) | Números dos lançamentos das despesas separados por "," |
+
+**Exemplo de Response**
+
+```
+{
+  "code": 200,
+  "message": "A requisicao interna (10045) da empresa (84) foi excluida com sucesso."
+}
+```
+
+**Possíveis códigos de erro**
+
+| Código | Descrição |
+| --- | --- |
+| 400 | Erro interno |
+| 500 | Falha ao processar a requisição |
