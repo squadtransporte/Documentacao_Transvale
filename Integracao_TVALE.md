@@ -43,8 +43,7 @@ flowchart TD
     J --> D
 
     G -->|Não| K["Realiza encontro entre idEstorno e substitutas"]
-    K --> J2["Gera movimentação contábil"]
-    J2 --> D
+    K --> D
 ```
 
 
