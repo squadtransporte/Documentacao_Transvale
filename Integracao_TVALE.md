@@ -24,6 +24,30 @@
 
 # Geração de Transação
 
+```mermaid
+flowchart TD
+    A([Recebe solicitação de registro de transações])
+    B{Tem idEstorno?}
+
+    B -->|Não| C["Emite transações normais (entrada e saída)"]
+    C --> D[Retorna resultado]
+
+    B -->|Sim| E[Verifica natureza da nota de estorno]
+    E --> F["Gera transação de natureza contrária (substituta)"]
+
+    F --> G{Deve gerar adiantamento?}
+
+    G -->|Sim| H[Gera adiantamento]
+    H --> I["Realiza encontro entre idEstorno e substitutas"]
+    I --> J["Gera movimentação contábil"]
+    J --> D
+
+    G -->|Não| K["Realiza encontro entre idEstorno e substitutas"]
+    K --> J2["Gera movimentação contábil"]
+    J2 --> D
+```
+
+
 Método responsável por gerar as transações de consumo, ele irá gerar duas notas, uma para registrar o pagamento ao posto de combustível e outra para registrar o recebimento do cliente, retornará dois IDs únicos para cada uma das notas geradas.
 
 **Método:** POST
@@ -34,34 +58,52 @@ Método responsável por gerar as transações de consumo, ele irá gerar duas n
 
 | Campo | Tipo de dados | Observação |
 | --- | --- | --- |
-| nrCpfCnpjBeneficiario | String(14) | CPF/CNPJ do Motorista que gerou a transação de consumo nos postos conveniados que será utilizado para geração da nota de entrada. |
-| cdMunicipioBeneficiario | Number(7) | Código do município IBGE da transação de consumo. |
-| nrCpfCnpjPagador | String(14) | CPF/CNPJ do pagador de consumo que será utilizado para a geraçao da nota de saída. |
-| cdMunicipioPagador | Number(7) | Código do município IBGE do pagador. |
-| dtEmissaoFornec | Date | Data da emissão da nota do fornecedor. |
-| vlRecebido | Number(15,2) | Valor recebido do cliente. |
-| vlPago | Number(15,2) | Valor pago ao posto |
-| psNotaFiscal | Number(15,2) | Peso da nota fiscal |
-| nrNfFornec | Number(10) | Número da nota do fornecedor |
+| idEstorno | String | Identificador da transação a ser estornada (quando informado, o processamento ocorre como estorno). |
+| dadosNotas | Array | Lista de notas a serem processadas. Cada item do array contém os seguintes campos: |
+| nrCpfCnpjBeneficiario | String(14) | CPF/CNPJ do beneficiário da nota (utilizado para geração da nota de entrada). (Obrigatório apenas quando **não** existe idEstorno)|
+| cdMunicipioBeneficiario | Number(7) | Código IBGE do município do beneficiário. |
+| nrCpfCnpjPagador | String(14) | CPF/CNPJ do pagador da transação (utilizado para geração da nota de saída). (Obrigatório apenas quando **não** existe idEstorno). |
+| cdMunicipioPagador | Number(7) | Código IBGE do município do pagador. (Obrigatório apenas quando **não** existe idEstorno). |
+| dtEmissaoFornec | Date | Data de emissão da nota do fornecedor. |
+| vlRecebido | Number(15,2) | Valor recebido do cliente. (Usado apenas em operações **sem** idEstorno). |
+| vlPago | Number(15,2) | Valor pago ao fornecedor/posto. |
+| psNotaFiscal | Number(15,2) | Peso da nota fiscal. (Opcional nos novos modelos). |
+| nrNfFornec | Number(10) | Número da nota do fornecedor. |
 
 ### Exemplo de Request:
 
 ```json
 {
-    "body": [
-        {
-            "nrCpfCnpjBeneficiario": "61420325019",
-            "cdMunicipioBeneficiario": 4127700,
-            "nrCpfCnpjPagador": "83596775000107",
-            "cdMunicipioPagador": 4210407,
-            "dtEmissaoFornec": "07/11/2023",
-            "vlRecebido": 2000,
-            "vlPago": 1800,
-            "psNotaFiscal": 1,
-            "nrNfFornec": 77762
-        }
+  "body": [
+    [
+      {
+        "dadosNotas": [
+          {
+            "nrCpfCnpjBeneficiario": "11111111000100",
+            "cdMunicipioBeneficiario": 1234567,
+            "nrCpfCnpjPagador": "22222222000100",
+            "cdMunicipioPagador": 7654321,
+            "dtEmissaoFornec": "06/11/2025",
+            "vlRecebido": 116.00,
+            "vlPago": 115.77,
+            "nrNfFornec": 987654
+          },
+          {
+            "nrCpfCnpjBeneficiario": "11111111000100",
+            "cdMunicipioBeneficiario": 1234567,
+            "nrCpfCnpjPagador": "22222222000100",
+            "cdMunicipioPagador": 7654321,
+            "dtEmissaoFornec": "06/11/2025",
+            "vlRecebido": 50.00,
+            "vlPago": 49.90,
+            "nrNfFornec": 987653
+          }
+        ]
+      }
     ]
+  ]
 }
+
 ```
 
 ### Relação de Campos → Response
@@ -70,6 +112,8 @@ Método responsável por gerar as transações de consumo, ele irá gerar duas n
 | --- | --- | --- |
 | code | Number(3) | Código do retorno |
 | message | String(4000) | Mensagem de retorno |
+| transacoes | ArrayList | Lista de transações de retorno |
+| nrNfFornec | Number(8) | Número identificador da transação |
 | idPagamento | String(20) | Id da nota fiscal gerada referente ao pagamento ao posto conveniado. |
 | idRecebimento | String(20) | Id da nota fiscal gerada referente ao recebimento do cliente. |
 
@@ -77,11 +121,34 @@ Método responsável por gerar as transações de consumo, ele irá gerar duas n
 
 ```json
 {
-    "code": 200,
-    "message": "Sucesso",
-    "idPagamento": "0084007138330010",
-    "idRecebimento": "0084005003850101"
+  "code": 200,
+  "message": "Sucesso",
+  "transacoes": [
+    [
+      {
+        "nrNfFornec": 1967028,
+        "idPagamento": "0010000268010010",
+        "idRecebimento": "0010000589260021"
+      },
+      {
+        "nrNfFornec": 1967027,
+        "idPagamento": "0010000268020010",
+        "idRecebimento": "0010000589270021"
+      },
+      {
+        "nrNfFornec": 1967025,
+        "idPagamento": "0010000268030010",
+        "idRecebimento": "0010000589280021"
+      },
+      {
+        "nrNfFornec": 1967026,
+        "idPagamento": "0010000268040010",
+        "idRecebimento": "0010000589290021"
+      }
+    ]
+  ]
 }
+
 ```
 
 ### Possíveis códigos de erro
