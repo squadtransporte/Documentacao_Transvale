@@ -2819,6 +2819,13 @@ Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio p
 | itens | valor | S | Number | Valor total do item |
 | itens | observacao | N | String(60) | Observação do item |
 | itens | codigoItem | S | Number | Código do item |
+| Principal | localArmazenagem | N | Array de Objetos | Local de Armazenagem |
+| localArmazenagem | tipoLocalArmazenagem | N | Number | Tipo do Local de Armazenagem |
+| localArmazenagem | localArmazenagem | N | Number | Local de Armazenagem |
+| localArmazenagem | subLocal1 | N | Number | Sub Local de Armazenagem |
+| localArmazenagem | subLocal2 | N | Number | Sub Local de Armazenagem |
+| localArmazenagem | subLocal3 | N | Number | Sub Local de Armazenagem |
+| localArmazenagem | subLocal4 | N | Number | Sub Local de Armazenagem |
 
 ### Exemplo de Request
 
@@ -2849,7 +2856,14 @@ Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio p
                      "observacao": "OBSERVACAO DE TESTE",
                      "codigoItem": 1
                     }
-                   ]
+                   ],
+		  "localArmazenagem": [
+						        {
+						            "tipoLocalArmazenagem": 9,
+						            "localArmazenagem": 1,
+						            "subLocal1": 1
+						        }
+						      ]
 }
 ```
 
