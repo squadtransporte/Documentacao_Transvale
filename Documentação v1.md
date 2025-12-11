@@ -2801,13 +2801,13 @@ Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio p
 | Principal | dataCompetencia | S | String(10) | Data de competência da despesa  |
 | Principal | codigoFilial | S | Number | Filial para geração da despesa  |
 | Principal | numeroPlaca | S | String(10) | Número da placa do veículo  |
-| Principal | codigoRota | S | Number | Código da rota  |
+| Principal | codigoRota | N | Number | Código da rota  |
 | Principal | codigoMotorista | S | String(5) | Código do motorista |
 | Principal | codigoNegocio | S | String(20) | Código do negocio  |
 | Principal | numeroDocumento | N | String(10) | Número do documento da despesa |
 | Principal | horimetroRefrigerador | N | String(10) | Horímetro do bau refrigerador |
 | Principal | dataLancamento | S | String(10) | Data de lançamento da despesa |
-| Principal | kilometragemFinal | S | Number | Kilometragem final do veículo |
+| Principal | kilometragemFinal | N | Number | Kilometragem final do veículo |
 | Principal | condicaoPagamento | S | Number | Condição de pagamento |
 | Principal | usuario | N | String(5) | Código do usuário do lançamento |
 | Principal | centrosCusto | S | Array de Objetos | Relação de centros de custo que será gerada a despesa |
@@ -2816,7 +2816,7 @@ Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio p
 | itens | codigoDespesa | N | Number | Código da despesa |
 | itens | pesoAtendido | S | Number | Peso do item |
 | itens | codigoMovimentacao | S | Number | Código da movimentação |
-| itens | valor | S | Number | Valor total do item |
+| itens | valor | N | Number | Valor total do item |
 | itens | observacao | N | String(60) | Observação do item |
 | itens | codigoItem | S | Number | Código do item |
 | Principal | locaisArmazenagens | N | Array de Objetos | Local de Armazenagem |
