@@ -74,35 +74,35 @@ Método responsável por gerar as transações de consumo, ele irá gerar duas n
 ```json
 {
   "body": [
-    [
-      {
-        "dadosNotas": [
-          {
-            "nrCpfCnpjBeneficiario": "11111111000100",
-            "cdMunicipioBeneficiario": 1234567,
-            "nrCpfCnpjPagador": "22222222000100",
-            "cdMunicipioPagador": 7654321,
-            "dtEmissaoFornec": "06/11/2025",
-            "vlRecebido": 116.00,
-            "vlPago": 115.77,
-            "nrNfFornec": 987654
-          },
-          {
-            "nrCpfCnpjBeneficiario": "11111111000100",
-            "cdMunicipioBeneficiario": 1234567,
-            "nrCpfCnpjPagador": "22222222000100",
-            "cdMunicipioPagador": 7654321,
-            "dtEmissaoFornec": "06/11/2025",
-            "vlRecebido": 50.00,
-            "vlPago": 49.90,
-            "nrNfFornec": 987653
-          }
-        ]
-      }
-    ]
+    {
+      "idEstorno":0010000268010010
+      "dadosNotas": [
+        {
+          "nrCpfCnpjBeneficiario": "88389594048",
+          "cdMunicipioBeneficiario": 4317202,
+          "nrCpfCnpjPagador": "79190055000161",
+          "cdMunicipioPagador": 4127700,
+          "dtEmissaoFornec": "15/12/2025",
+          "vlRecebido": 2000,
+          "vlPago": 1800,
+          "psNotaFiscal": 1,
+          "nrNfFornec": 2512151
+        },
+        {
+          "nrCpfCnpjBeneficiario": "88389594048",
+          "cdMunicipioBeneficiario": 4317202,
+          "nrCpfCnpjPagador": "79190055000161",
+          "cdMunicipioPagador": 4127700,
+          "dtEmissaoFornec": "15/12/2025",
+          "vlRecebido": 1800,
+          "vlPago": 2000,
+          "psNotaFiscal": 1,
+          "nrNfFornec": 2512152
+        }
+      ]
+    }
   ]
 }
-
 ```
 
 ### Relação de Campos → Response
@@ -123,28 +123,26 @@ Método responsável por gerar as transações de consumo, ele irá gerar duas n
   "code": 200,
   "message": "Sucesso",
   "transacoes": [
-    [
-      {
-        "nrNfFornec": 1967028,
-        "idPagamento": "0010000268010010",
-        "idRecebimento": "0010000589260021"
-      },
-      {
-        "nrNfFornec": 1967027,
-        "idPagamento": "0010000268020010",
-        "idRecebimento": "0010000589270021"
-      },
-      {
-        "nrNfFornec": 1967025,
-        "idPagamento": "0010000268030010",
-        "idRecebimento": "0010000589280021"
-      },
-      {
-        "nrNfFornec": 1967026,
-        "idPagamento": "0010000268040010",
-        "idRecebimento": "0010000589290021"
-      }
-    ]
+    {
+      "nrNfFornec": 1967028,
+      "idPagamento": "0010000268010010",
+      "idRecebimento": "0010000589260021"
+    },
+    {
+      "nrNfFornec": 1967027,
+      "idPagamento": "0010000268020010",
+      "idRecebimento": "0010000589270021"
+    },
+    {
+      "nrNfFornec": 1967025,
+      "idPagamento": "0010000268030010",
+      "idRecebimento": "0010000589280021"
+    },
+    {
+      "nrNfFornec": 1967026,
+      "idPagamento": "0010000268040010",
+      "idRecebimento": "0010000589290021"
+    }
   ]
 }
 
