@@ -2802,7 +2802,7 @@ Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio p
 | Principal | codigoFilial | S | Number | Filial para geração da despesa  |
 | Principal | numeroPlaca | S | String(10) | Número da placa do veículo  |
 | Principal | codigoRota | N | Number | Código da rota  |
-| Principal | codigoMotorista | S | String(5) | Código do motorista |
+| Principal | codigoMotorista | N | String(5) | Código do motorista |
 | Principal | codigoNegocio | S | String(20) | Código do negocio  |
 | Principal | numeroDocumento | N | String(10) | Número do documento da despesa |
 | Principal | horimetroRefrigerador | N | String(10) | Horímetro do bau refrigerador |
