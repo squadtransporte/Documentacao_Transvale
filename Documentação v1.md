@@ -2813,7 +2813,7 @@ Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio p
 | Principal | centrosCusto | S | Array de Objetos | Relação de centros de custo que será gerada a despesa |
 | centrosCusto | codigo | S | Number | Código do centro de custo |
 | Principal | itens | S | Array de Objetos | Relação de Itens da despesa |
-| itens | codigoDespesa | N | Number | Código da despesa |
+| itens | codigoDespesa | S | Number | Código da despesa |
 | itens | pesoAtendido | S | Number | Peso do item |
 | itens | codigoMovimentacao | S | Number | Código da movimentação |
 | itens | valor | N | Number | Valor total do item |
@@ -2849,7 +2849,7 @@ Este método irá gerar uma despesa de frota, sendo possível efetuar o rateio p
                           ],
           "itens": [
                     {
-                     "codigoDespesa": null,
+                     "codigoDespesa": 1,
                      "pesoAtendido": 30.000,
                      "codigoMovimentacao": 3000,
                      "valor": 10000,
