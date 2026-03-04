@@ -1,29 +1,5 @@
 # Fluxo
 
-# Sumário
-# Autenticação
-  A autenticação é feita via Bearer Token retornado pela rota.
-
-**Método:** GET
-
-**Rota:** https://cloudapp.maxiconsystems.com.br:8474/integracao-api/api/security/login
-
-### Exemplo de Request:
-
-```json
-{
-    "authorization": "Basic usuárioEsenhaBase64"
-}
-```
-
-### Exemplo de Response
-
-```json
-{
-    "token": "token"
-}
-```
-
 ```mermaid
 flowchart TD
     %% =========================
@@ -109,7 +85,29 @@ flowchart TD
     G -->|Não| K["Realiza encontro entre idEstorno e substitutas"]
     K --> D
 ```
+# Sumário
+# Autenticação
+  A autenticação é feita via Bearer Token retornado pela rota.
 
+**Método:** GET
+
+**Rota:** https://cloudapp.maxiconsystems.com.br:8474/integracao-api/api/security/login
+
+### Exemplo de Request:
+
+```json
+{
+    "authorization": "Basic usuárioEsenhaBase64"
+}
+```
+
+### Exemplo de Response
+
+```json
+{
+    "token": "token"
+}
+```
 
 Método responsável por gerar as transações de consumo, ele irá gerar duas notas, uma para registrar o pagamento ao posto de combustível e outra para registrar o recebimento do cliente, retornará dois IDs únicos para cada uma das notas geradas.
 
