@@ -1,3 +1,5 @@
+# Fluxo
+
 # Sumário
 # Autenticação
   A autenticação é feita via Bearer Token retornado pela rota.
@@ -20,6 +22,68 @@
 {
     "token": "token"
 }
+```
+
+```mermaid
+flowchart TD
+    %% =========================
+    %% FLUXO PADRÃO (PRINCIPAL)
+    %% =========================
+    A["Truck (sistema gestão)<br/>Envia geração de transações"]:::ext --> B["Maxys<br/>Recebe transações"]:::sys
+
+    B --> C{Para cada transação}:::dec
+    C --> D["REC001 / VFS002<br/>Gerar NF-e da transação"]:::fiscal
+    D --> E["NF-e emitida<br/>para clifor da transação"]:::fiscal
+
+    E --> F["Acúmulo de transações<br/>(mensal)"]:::proc
+    F --> G["Gerar Fatura<br/>(agrupamento)"]:::proc
+    G --> H["CTB004<br/>Lançamento contábil<br/>(total da fatura)"]:::contabil
+    H --> I["Emitir NFS-e<br/>(valor do spread)"]:::fiscal
+    I --> J["Gerar Processo de Caixa<br/>(NFS-e)"]:::fin
+
+    %% Lacuna do fluxo
+    B -. DÚVIDA .-> L["(Onde é gerado o processo de caixa<br/>/controle financeiro<br/>DAS TRANSAÇÕES ORIGINAIS?)"]:::lacuna
+
+    %% =========================
+    %% FLUXO DE ESTORNO
+    %% =========================
+    A2["Truck solicita ESTORNO<br/>(ou envia transações inversas)"]:::ext --> B2["Maxys<br/>Gera transações invertidas"]:::sys
+    B2 --> C2["REC001 / VFS002<br/>Gerar NF-e do estorno"]:::fiscal
+
+    %% =========================
+    %% FLUXO DE SUBSTITUIÇÃO
+    %% =========================
+    C2 --> S[Gerar Transação Substituta]:::proc
+    S --> T{Cenário}:::dec
+    T --> T1["Substituta<br/>A PAGAR MAIOR"]:::proc
+    T --> T2["Substituta<br/>A PAGAR MENOR"]:::proc
+    T --> T3["Substituta<br/>A RECEBER MAIOR"]:::proc
+    T --> T4["Substituta<br/>A RECEBER MENOR"]:::proc
+
+    T1 --> U["Encontro de Baixa<br/>(Estorno x Substituta)"]:::fin
+    T2 --> U
+    T3 --> U
+    T4 --> U
+
+    U --> V{Diferença de valores?}:::dec
+    V -->|Não| W["Retorna ao fluxo padrão<br/>(faturamento)"]:::proc
+    V -->|Sim, substituição maior| X["FAD001 / FAD002<br/>Gerar adiantamento financeiro"]:::fin
+    X --> W
+
+    %% retorno ao fluxo principal
+    W --> G
+
+    %% =========================
+    %% STYLES
+    %% =========================
+    classDef ext fill:#fff,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef sys fill:#f8f8ff,stroke:#333,stroke-width:1px;
+    classDef fiscal fill:#e8f4ff,stroke:#1b4f9c,stroke-width:1px;
+    classDef contabil fill:#fff4e6,stroke:#a35b00,stroke-width:1px;
+    classDef fin fill:#e9fff0,stroke:#157a3d,stroke-width:1px;
+    classDef proc fill:#f2f2f2,stroke:#555,stroke-width:1px;
+    classDef dec fill:#ffffff,stroke:#000,stroke-width:1px;
+    classDef lacuna fill:#ffecec,stroke:#b00020,stroke-width:2px;
 ```
 
 # Geração de Transação
