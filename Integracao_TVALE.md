@@ -62,29 +62,6 @@ flowchart TD
     classDef lacuna fill:#ffecec,stroke:#b00020,stroke-width:2px;
 ```
 
-# Geração de Transação
-
-```mermaid
-flowchart TD
-    A([Recebe solicitação de registro de transações])
-    B{Tem idEstorno?}
-
-    B -->|Não| C["Emite transações normais (entrada e saída)"]
-    C --> D[Retorna resultado]
-
-    B -->|Sim| E[Verifica natureza da nota de estorno]
-    E --> F["Gera transação de natureza contrária (substituta)"]
-
-    F --> G{Deve gerar adiantamento?}
-
-    G -->|Sim| H[Gera adiantamento]
-    H --> I["Realiza encontro entre idEstorno e substitutas"]
-    I --> J["Gera movimentação contábil"]
-    J --> D
-
-    G -->|Não| K["Realiza encontro entre idEstorno e substitutas"]
-    K --> D
-```
 # Sumário
 # Autenticação
   A autenticação é feita via Bearer Token retornado pela rota.
@@ -107,6 +84,30 @@ flowchart TD
 {
     "token": "token"
 }
+```
+
+# Geração de Transação
+
+```mermaid
+flowchart TD
+    A([Recebe solicitação de registro de transações])
+    B{Tem idEstorno?}
+
+    B -->|Não| C["Emite transações normais (entrada e saída)"]
+    C --> D[Retorna resultado]
+
+    B -->|Sim| E[Verifica natureza da nota de estorno]
+    E --> F["Gera transação de natureza contrária (substituta)"]
+
+    F --> G{Deve gerar adiantamento?}
+
+    G -->|Sim| H[Gera adiantamento]
+    H --> I["Realiza encontro entre idEstorno e substitutas"]
+    I --> J["Gera movimentação contábil"]
+    J --> D
+
+    G -->|Não| K["Realiza encontro entre idEstorno e substitutas"]
+    K --> D
 ```
 
 Método responsável por gerar as transações de consumo, ele irá gerar duas notas, uma para registrar o pagamento ao posto de combustível e outra para registrar o recebimento do cliente, retornará dois IDs únicos para cada uma das notas geradas.
