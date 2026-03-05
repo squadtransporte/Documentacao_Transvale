@@ -49,17 +49,6 @@ flowchart TD
     %% retorno ao fluxo principal
     W --> G
 
-    %% =========================
-    %% STYLES
-    %% =========================
-    classDef ext fill:#fff,stroke:#333,stroke-width:2px,stroke-dasharray: 5 5;
-    classDef sys fill:#f8f8ff,stroke:#333,stroke-width:1px;
-    classDef fiscal fill:#e8f4ff,stroke:#1b4f9c,stroke-width:1px;
-    classDef contabil fill:#fff4e6,stroke:#a35b00,stroke-width:1px;
-    classDef fin fill:#e9fff0,stroke:#157a3d,stroke-width:1px;
-    classDef proc fill:#f2f2f2,stroke:#555,stroke-width:1px;
-    classDef dec fill:#ffffff,stroke:#000,stroke-width:1px;
-    classDef lacuna fill:#ffecec,stroke:#b00020,stroke-width:2px;
 ```
 
 # Sumário
