@@ -1604,16 +1604,16 @@ Esse método permite o cadastro de um conjunto no Maxys.
 | Driver | Complement | N | String (30) | Complemento do endereço do motorista |
 | Driver | County | S | String (100) | Bairro do endereço do motorista |
 | Driver | City | S | Number (7) | Código IBGE do município do endereço do motorista |
-| Driver | StateRegisIndicator | S | String (2) | Indicador de Inscrição Estadual |
-| Driver | StateRegistration | S | String (20) | Numero da Incrição Estadual |
-| Driver | CityRegistration | S | String (20) | Numero da Incrição Municipal |
-| Driver | Nationality | S | Number | Código IBGE do pais de nascimento |
-| Driver | EducationLevel | S | Number | Código do Grau de Instrução |
-| Driver | Sex | S | String (1) | Sexo |
-| Driver | CNHFormNumber | S | Number | Numero da CNH - Carteira Nacional de Habilitação |
-| Driver | CNHSecurityCode | S | String (15) | Código de Segurança da CNH |
-| Driver | CNHIssuingAuthority | S | String (300) | Orgão Emissor CNH |
-| Driver | Email | S | String (60) | Endereço de E-mail |
+| Driver | StateRegisIndicator | N | String (2) | Indicador de Inscrição Estadual |
+| Driver | StateRegistration | N | String (20) | Numero da Incrição Estadual |
+| Driver | CityRegistration | N | String (20) | Numero da Incrição Municipal |
+| Driver | Nationality | N | Number | Código IBGE do pais de nascimento |
+| Driver | EducationLevel | N | Number | Código do Grau de Instrução |
+| Driver | Sex | N | String (1) | Sexo |
+| Driver | CNHFormNumber | N | Number | Numero da CNH - Carteira Nacional de Habilitação |
+| Driver | CNHSecurityCode | N | String (15) | Código de Segurança da CNH |
+| Driver | CNHIssuingAuthority | N | String (300) | Orgão Emissor CNH |
+| Driver | Email | N | String (60) | Endereço de E-mail |
 | Driver | Landline | N | String (15) | Número de telefone do motorista |
 | Driver | CommercialLandline | N | String (60) | Número de telefone da referência comercial do motorista |
 | Driver | CommercialContact | N | String (15) | Descrição da referência comercial do motorista |
@@ -1624,6 +1624,24 @@ Esse método permite o cadastro de um conjunto no Maxys.
 | Driver | References | N | Array | Vetor com 3 seções de referências para o motorista |
 | Driver.References | Phone | N | String (15) | Número de telefone da referência |
 | Driver.References | Name | N | String (60) | Descrição da referência |
+| Driver.AccountDriver | Bank | N | Number | Código do Banco |
+| Driver.AccountDriver | Agency | N | Number | Número da Agência |
+| Driver.AccountDriver | Dig | N | String (2) | Digito da Agência |
+| Driver.AccountDriver | CurrentAccount | N | String (10) | Número da conta corrente |
+| Driver.AccountDriver | DigCA | N | String (2) | Digito da conta corrente |
+| Driver.AccountDriver | Type | N | String (1) | Tipo da conta  |
+| Driver.AccountDriver | MainAccount | N | String (1) | Indica se a conta deve ser a principal |
+| Driver.PixDriver | Type | N | Number | Tipo de chave Pix  |
+| Driver.PixDriver | Key | N | String (77) | Chave pix  |
+| Driver.PixDriver | MainKey | N | String (1) | Indica se a conta deve ser a principal |
+| Driver.CardDriver | Description | N | String (200) | Descrição do Cartão |
+| Driver.CardDriver | Number | N | Number | Número do Cartão  |
+| Driver.CardDriver | Type | N | Number) | Tipo do cartão  |
+| Driver.CardDriver | Identifier | N | String (30) | Código identificador do Cartão |
+| Driver.TaxingDriver | Federal | N | String (1) | Idenrtifica se é imposto Federal |
+| Driver.TaxingDriver | Csosn | N | Number | Número do Cartão  |
+| Driver.TaxingDriver | State | N | String (1)) | Tipo do cartão  |
+| Driver.TaxingDriver | t | N | Date | Código identificador do Cartão |
 |  |  |  |  |  |
 | Principal | DeviceRegisters | S | Array | Vetor com as seções de informações dos veículos |
 | DeviceRegisters | Document | S | String (14) | CPF ou CNPJ do proprietário do veículo |
