@@ -1589,6 +1589,7 @@ Esse método permite o cadastro de um conjunto no Maxys.
 | Driver | Document2 | S | String (20) | Número do RG do motorista |
 | Driver | IssueDateDocument2 | S | Date | Data de emissão do RG do motorista |
 | Driver | IssueStateDocument2 | S | String (2) | Unidade Federativa de emissão do RG do motorista |
+| Driver | IssueAuthorityDocument2 | S | String (10) | Orgão Emissor do RG |
 | Driver | Document3 | S | String (15) | Número da CNH do motorista |
 | Driver | CategoryDocument3 | S | String (2) | Categoria da CNH do motorista |
 | Driver | DueDateDocument3 | S | Date | Data de vencimento da CNH do motorista |
@@ -1603,6 +1604,16 @@ Esse método permite o cadastro de um conjunto no Maxys.
 | Driver | Complement | N | String (30) | Complemento do endereço do motorista |
 | Driver | County | S | String (100) | Bairro do endereço do motorista |
 | Driver | City | S | Number (7) | Código IBGE do município do endereço do motorista |
+| Driver | StateRegisIndicator | S | String (2) | Indicador de Inscrição Estadual |
+| Driver | StateRegistration | S | String (20) | Numero da Incrição Estadual |
+| Driver | CityRegistration | S | String (20) | Numero da Incrição Municipal |
+| Driver | Nationality | S | Number | Código IBGE do pais de nascimento |
+| Driver | EducationLevel | S | Number | Código do Grau de Instrução |
+| Driver | Sex | S | String (1) | Sexo |
+| Driver | CNHFormNumber | S | Number | Numero da CNH - Carteira Nacional de Habilitação |
+| Driver | CNHSecurityCode | S | String (15) | Código de Segurança da CNH |
+| Driver | CNHIssuingAuthority | S | String (300) | Orgão Emissor CNH |
+| Driver | Email | S | String (60) | Endereço de E-mail |
 | Driver | Landline | N | String (15) | Número de telefone do motorista |
 | Driver | CommercialLandline | N | String (60) | Número de telefone da referência comercial do motorista |
 | Driver | CommercialContact | N | String (15) | Descrição da referência comercial do motorista |
