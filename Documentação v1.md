@@ -1638,10 +1638,10 @@ Esse método permite o cadastro de um conjunto no Maxys.
 | Driver.CardDriver | Number | N | Number | Número do Cartão  |
 | Driver.CardDriver | Type | N | Number) | Tipo do cartão  |
 | Driver.CardDriver | Identifier | N | String (30) | Código identificador do Cartão |
-| Driver.TaxingDriver | Federal | N | String (1) | Idenrtifica se é imposto Federal |
-| Driver.TaxingDriver | Csosn | N | Number | Número do Cartão  |
-| Driver.TaxingDriver | State | N | String (1)) | Tipo do cartão  |
-| Driver.TaxingDriver | t | N | Date | Código identificador do Cartão |
+| Driver.TaxingDriver | Federal | N | String (1) | Identifica se é Imposto Federal |
+| Driver.TaxingDriver | Csosn | N | Number | Código de Situação da Operação - Csosn|
+| Driver.TaxingDriver | State | N | String (1)) | Identifica se é Imposto Estadual   |
+| Driver.TaxingDriver | StartDateValidity | N | Date | Data de inicio da validade |
 |  |  |  |  |  |
 | Principal | DeviceRegisters | S | Array | Vetor com as seções de informações dos veículos |
 | DeviceRegisters | Document | S | String (14) | CPF ou CNPJ do proprietário do veículo |
@@ -1654,6 +1654,11 @@ Esse método permite o cadastro de um conjunto no Maxys.
 | DeviceRegisters | City | S | Number (7) | Código IBGE do município do endereço do proprietário do veículo |
 | DeviceRegisters | Landline | N | String (15) | Número de telefone do proprietário do veículo |
 | DeviceRegisters | Plate | S | String (15) | Placa do veículo |
+| DeviceRegisters | Aggregate | N | String (1) | Identifica se é Agregado |
+| DeviceRegisters | HorseTireSet | N | Number | Conjunto pneu Cavalo |
+| DeviceRegisters | CartTireSet | N | Number | Conjunto pneu Carreta |
+| DeviceRegisters | Capacity | N | Number | Capacidade em metros cubicos |
+| DeviceRegisters | RegistrationNumber | N | String (15) | Numero de Registro |
 | DeviceRegisters | CityPlate | S | Number (7) | Código IBGE de registro do veículo |
 | DeviceRegisters | Document3 | S | String (12) | Número do Renavam do veículo |
 | DeviceRegisters | DeviceBrand | S | String (100) | Marca do veículo (enviar código identificador, para relacionamento com DE/PARA) |
@@ -1661,6 +1666,17 @@ Esse método permite o cadastro de um conjunto no Maxys.
 | DeviceRegisters | DeviceType | S | String (100) | Tipo do veículo (enviar código identificador, para relacionamento com DE/PARA) |
 | DeviceRegisters | Document4 | S | String (30) | Chassis do veículo |
 | DeviceRegisters | Year | S | Number (4) | Ano de fabricação do veículo |
+| DeviceRegisters | NationalityOwner | N | Number | Código IBGE do pais de nascimento do Proprietário |
+| DeviceRegisters | EducationLevelOwner | N | Number | Numero do RG do Proprietário |
+| DeviceRegisters | SexOwner | N | String (1) | Sexo do Proprietário|
+| DeviceRegisters | NumberRGOwner | N | String | Código do Grau de Instrução do Proprietário |
+| DeviceRegisters | IssueDateRGOwner | N | String | Data de Emissão do RG do Proprietário |
+| DeviceRegisters | IssueStateRGOwner | N | String | Estado de Emissão do RG do Proprietário |
+| DeviceRegisters | IssueAuthorityRGOwner | N | String |Orgão Emissor do Proprietário |
+| DeviceRegisters | EmailOwner | N |  String (60) | Endereço de E-mail do Proprietário |
+| DeviceRegisters | StateRegisIndicatorOwner | N | String (2) | Indicador de Inscrição Estadual do Proprietário |
+| DeviceRegisters | StateRegistrationOwner | N | String (20) | Numero da Incrição Estadual do Proprietário |
+| DeviceRegisters | CityRegistrationOwner | N | String (20) | Numero da Incrição Municipal do Proprietário |
 | DeviceRegisters | Document2 | S | String (20) | Número do RNTRC |
 | DeviceRegisters | NameDocument2 | S | String (60) | Nome do proprietário do RNTRC |
 | DeviceRegisters | DueDocument2 | S | Date | Data de vencimento do RNTRC |
@@ -1671,12 +1687,60 @@ Esse método permite o cadastro de um conjunto no Maxys.
 | DeviceRegisters | Complement5 | N | String (30) | Complemento do endereço do proprietário do RNTRC, caso diferente do proprietário do veículo |
 | DeviceRegisters | County5 | N | String (100) | Bairro do endereço do proprietário do RNTRC, caso diferente do proprietário do veículo |
 | DeviceRegisters | City5 | N | Number (7) | Código IBGE do município do endereço do proprietário do RNTRC, caso diferente do proprietário do veículo |
+| DeviceRegisters | LandlineRenter | N | String (15) | Número de telefone do Locatário do veículo |
 | DeviceRegisters | Color | N | String | Cor do veículo |
 | DeviceRegisters | Axes | N | Number | Número de eixos do veículo |
 | DeviceRegisters | pisOwner | N | Number | Número do PIS do proprietário do veículo |
 | DeviceRegisters | pisTenant | N | Number | Número do PIS do locatário do veículo |
 | DeviceRegisters | ownerMatchedTAC | N | Boolean | Indica se o proprietário do veículo é TAC/TAC equiparado (Transportador autônomo de cargas) |
 | DeviceRegisters | tenantMatchedTAC | N | Boolean | Indica se o locatário do veículo é TAC/TAC equiparado (Transportador autônomo de cargas) |
+| DeviceRegisters | NationalityRenter | N | Number | Código IBGE do pais de nascimento do Locatário |
+| DeviceRegisters | EducationLevelRenter | N | Number | Numero do RG do Locatário |
+| DeviceRegisters | SexRenter | N | String (1) | Sexo do Locatário|
+| DeviceRegisters | NumberRGRenter | N | String | Código do Grau de Instrução do Locatário |
+| DeviceRegisters | IssueDateRGRenter | N | String | Data de Emissão do RG do Locatário |
+| DeviceRegisters | IssueStateRGRenter | N | String | Estado de Emissão do RG do Locatário |
+| DeviceRegisters | IssueAuthorityRGRenter | N | String |Orgão Emissor do Locatário |
+| DeviceRegisters | EmailRenter | N |  String (60) | Endereço de E-mail do Locatário |
+| DeviceRegisters | StateRegisIndicatorRenter | N | String (2) | Indicador de Inscrição Estadual do Locatário |
+| DeviceRegisters | StateRegistrationRenter | N | String (20) | Numero da Incrição Estadual do Locatário |
+| DeviceRegisters | CityRegistrationRenter | N | String (20) | Numero da Incrição Municipal do Locatário |
+| DeviceRegisters.AccountDeviceRegistersOwner | Bank | N | Number | Código do Banco |
+| DeviceRegisters.AccountDeviceRegistersOwner | Agency | N | Number | Número da Agência |
+| DeviceRegisters.AccountDeviceRegistersOwner | Dig | N | String (2) | Digito da Agência |
+| DeviceRegisters.AccountDeviceRegistersOwner | CurrentAccount | N | String (10) | Número da conta corrente |
+| DeviceRegisters.AccountDeviceRegistersOwner | DigCA | N | String (2) | Digito da conta corrente |
+| DeviceRegisters.AccountDeviceRegistersOwner | Type | N | String (1) | Tipo da conta  |
+| DeviceRegisters.AccountDeviceRegistersOwner | MainAccount | N | String (1) | Indica se a conta deve ser a principal |
+| DeviceRegisters.PixDeviceRegistersOwner | Type | N | Number | Tipo de chave Pix  |
+| DeviceRegisters.PixDeviceRegistersOwner | Key | N | String (77) | Chave pix  |
+| DeviceRegisters.PixDeviceRegistersOwner | MainKey | N | String (1) | Indica se a conta deve ser a principal |
+| DeviceRegisters.CardDeviceRegistersOwner | Description | N | String (200) | Descrição do Cartão |
+| DeviceRegisters.CardDeviceRegistersOwner | Number | N | Number | Número do Cartão  |
+| DeviceRegisters.CardDeviceRegistersOwner | Type | N | Number) | Tipo do cartão  |
+| DeviceRegisters.CardDeviceRegistersOwner | Identifier | N | String (30) | Código identificador do Cartão |
+| DeviceRegisters.TaxingDeviceRegistersOwner | Federal | N | String (1) | Identifica se é Imposto Federal |
+| DeviceRegisters.TaxingDeviceRegistersOwner | Csosn | N | Number | Código de Situação da Operação - Csosn|
+| DeviceRegisters.TaxingDeviceRegistersOwner | State | N | String (1)) | Identifica se é Imposto Estadual   |
+| DeviceRegisters.TaxingDeviceRegistersOwner | StartDateValidity | N | Date | Data de inicio da validade |
+| DeviceRegisters.AccountDeviceRegistersRenter | Bank | N | Number | Código do Banco |
+| DeviceRegisters.AccountDeviceRegistersRenter | Agency | N | Number | Número da Agência |
+| DeviceRegisters.AccountDeviceRegistersRenter | Dig | N | String (2) | Digito da Agência |
+| DeviceRegisters.AccountDeviceRegistersRenter | CurrentAccount | N | String (10) | Número da conta corrente |
+| DeviceRegisters.AccountDeviceRegistersRenter | DigCA | N | String (2) | Digito da conta corrente |
+| DeviceRegisters.AccountDeviceRegistersRenter | Type | N | String (1) | Tipo da conta  |
+| DeviceRegisters.AccountDeviceRegistersRenter | MainAccount | N | String (1) | Indica se a conta deve ser a principal |
+| DeviceRegisters.PixDeviceRegistersRenter | Type | N | Number | Tipo de chave Pix  |
+| DeviceRegisters.PixDeviceRegistersRenter | Key | N | String (77) | Chave pix  |
+| DeviceRegisters.PixDeviceRegistersRenter | MainKey | N | String (1) | Indica se a conta deve ser a principal |
+| DeviceRegisters.CardDeviceRegistersRenter | Description | N | String (200) | Descrição do Cartão |
+| DeviceRegisters.CardDeviceRegistersRenter | Number | N | Number | Número do Cartão  |
+| DeviceRegisters.CardDeviceRegistersRenter | Type | N | Number) | Tipo do cartão  |
+| DeviceRegisters.CardDeviceRegistersRenter | Identifier | N | String (30) | Código identificador do Cartão |
+| DeviceRegisters.TaxingDeviceRegistersRenter | Federal | N | String (1) | Identifica se é Imposto Federal |
+| DeviceRegisters.TaxingDeviceRegistersRenter | Csosn | N | Number | Código de Situação da Operação - Csosn|
+| DeviceRegisters.TaxingDeviceRegistersRenter | State | N | String (1)) | Identifica se é Imposto Estadual   |
+| DeviceRegisters.TaxingDeviceRegistersRenter | StartDateValidity | N | Date | Data de inicio da validade |
 |  |  |  |  |  |
 | Principal | Document | N | Array | Vetor com as seções de documentos anexados |
 | Document | DocumentContent | S | Base 64 | Imagem no formate Base 64 |
@@ -1727,12 +1791,13 @@ Esse método permite o cadastro de um conjunto no Maxys.
 {
   "ExternalId": null,
   "Driver": {
-    "Document": "52771345579",
-    "Name": "Emanuel Cláudio Silva",
+    "Document": "44010253002",
+    "Name": "Emanuel Cláudio Silva PH1",
     "DateOfBirthday": "04/11/1997",
     "Document2": "425195855",
     "IssueDateDocument2": "01/02/2015",
     "IssueStateDocument2": "PR",
+    "IssueAuthorityDocument2":"SSP/RS",  
     "Document3": "32425979301",
     "CategoryDocument3": "E",
     "DueDateDocument3": "31/12/2023",
@@ -1748,13 +1813,23 @@ Esse método permite o cadastro de um conjunto no Maxys.
     "County": "TROPICAL",
     "City": "4104808",
     "State": "PR",
-    "Landline": "45989225437",
+    "StateRegisIndicator": "2",
+    "StateRegistration": "ISENTO", 
+    "CityRegistration": "214396",
+    "Landline": "62991016586",
     "CommercialLandline": "526686",
     "CommercialContact": "TESTE",
     "ReferenceLandline": "526685",
     "ReferenceContact": "TESTE",
     "DriverProfileCode": "1",
     "Pis": "123456789",
+    "Nationality": 1 ,       
+    "EducationLevel": 2 ,    
+    "Sex": "M" ,     
+    "CNHFormNumber": 123456789,       
+    "CNHSecurityCode":"1215446544",     
+    "CNHIssuingAuthority":"RS", 
+    "Email": "teste@gmail.com",              
     "References": [
       {
         "Phone": "44998049893",
@@ -1767,6 +1842,46 @@ Esse método permite o cadastro de um conjunto no Maxys.
       {
         "Phone": "44998049893",
         "Name": "TESTE 3"
+      }
+    ],
+    "CardDriver": [ 
+      {
+        "Description": "Cartao Motorista 1",
+        "Number": 1234567890123456,
+        "Type": 1,
+        "Identifier": "222" 
+      },
+       {
+        "Description": "Cartao Motorista 2",
+        "Number": "1234567890123456",
+        "Type": 2,
+        "Identifier": "223" 
+      }
+    ],
+    "TaxingDriver":[
+      {
+        "Federal": "S",
+        "Csosn": 900,
+        "State": "N",
+        "StartDateValidity": "31/12/2023"
+      }
+    ],
+    "AccountDriver":[ 
+      {
+        "Bank": 1,                   
+        "Agency": 4110,               
+        "Dig": "1",                   
+        "CurrentAccount": 12345,      
+        "DigCA": 6,                   
+        "Type": "C",
+        "MainAccount": "S"                 
+      }
+    ],
+    "PixDriver":[
+      {
+        "Type": 2,
+        "Key": "teste@gmail.com",
+        "MainKey": "S" 
       }
     ]
   },
@@ -1784,6 +1899,11 @@ Esse método permite o cadastro de um conjunto no Maxys.
       "Contact": "EDSON LEVI DA CRUZ",
       "CommercialLandline": "526685",
       "Plate": "JYX1812",
+      "Aggregate": "S",
+      "HorseTireSet": 3 , 
+      "CartTireSet": 2 , 
+      "Capacity": 300, 
+      "RegistrationNumber": "987654338", 
       "CityPlate": "4127700",
       "Document3": "76367066106",
       "DeviceBrand": "1",
@@ -1791,6 +1911,17 @@ Esse método permite o cadastro de um conjunto no Maxys.
       "DeviceType": "1",
       "Document4": "654153495487",
       "Year": "2009",
+      "NationalityOwner": 1 ,       
+      "EducationLevelOwner": 2 ,    
+      "SexOwner": "M" ,  
+      "NumberRGOwner": "425195855",  
+      "IssueDateRGOwner": "01/02/2015",   
+      "IssueStateRGOwner": "PR",                 
+      "IssueAuthorityRGOwner":"SSP/RS",  
+      "EmailOwner": "testeOwner@gmail.com", 
+      "StateRegisIndicatorOwner": "2", 
+      "StateRegistrationOwner": "ISENTO",   
+      "CityRegistrationOwner": "214396",     
       "Document2": "46546854170",
       "NameDocument2": "Emanuel Cláudio Silva",
       "DueDocument2": "31/12/2030",
@@ -1801,11 +1932,91 @@ Esse método permite o cadastro de um conjunto no Maxys.
       "Complement5": "ENDERECO TESTE",
       "County5": "TROPICAL",
       "City5": "4104808",
+      "LandlineRenter": "45989225437",
       "Color": "Azul",
       "Axes": "1",
       "pisOwner": "123456789",
       "pisTenant": "123456789",
-      "matchedTAC": true
+      "StateRegisIndicatorRenter": "2", 
+      "StateRegistrationRenter": "ISENTO",   
+      "CityRegistrationRenter": "214396",
+      "NationalityRenter": 1 ,       
+      "EducationLevelRenter": 2 ,    
+      "SexRenter": "M" ,  
+      "NumberRGRenter": "425195855",
+      "IssueDateRGRenter": "01/02/2015",
+      "IssueStateRGRenter": "PR",             
+      "IssueAuthorityRGRenter":"SSP/RS",     
+      "EmailRenter": "testeRenter@gmail.com", 
+      "matchedTAC": true,
+      "CardOwner": [ 
+        {
+          "Description": "Cartao Propietário", 
+          "Number": 1234567890123456, 
+          "Type": 1,                    
+          "Identifier": "222"          
+        }
+      ],
+      "TaxingOwner":[
+        {
+          "Federal": "S",
+          "Csosn": 900,
+          "State": "N",
+          "StartDateValidity": "31/12/2023"
+        }
+      ],
+      "AccountOwner":[ 
+        {
+          "Bank": 1,                   
+          "Agency": 4110,               
+          "Dig": "1",                   
+          "CurrentAccount": 12345,      
+          "DigCA": 6,                   
+          "Type": "C",
+          "MainAccount": "S"                 
+        }
+      ],
+      "PixOwner":[
+        {
+          "Type": 2,
+          "Key": "teste@gmail.com",
+          "MainKey": "S" 
+        }
+      ],
+      "CardRenter": [ 
+        {
+          "Description": "Cartao Locatário", 
+          "Number": 1234567890123456, 
+          "Type": 1,                    
+          "Identifier": "222"          
+        }
+      ],
+      "TaxingRenter":[
+        {
+          "Federal": "S",
+          "Csosn": 900,
+          "State": "N",
+          "StartDateValidity": "31/12/2023"
+        }
+      ],
+      "AccountRenter":[ 
+        {
+          "Bank": 1,                   
+          "Agency": 4110,               
+          "Dig": "1",                   
+          "CurrentAccount": 12345,      
+          "DigCA": 6,                   
+          "Type": "C",
+          "MainAccount": "S"                 
+        }
+      ],
+      "PixRenter":[
+        {
+          "Type": 2,
+          "Key": "teste@gmail.com",
+           "MainKey": "S" 
+        }
+      ]
     }
   ],
   "Comments": "TESTE DE ENVIO DE FICHA - AMBIENTE DE TESTE",
@@ -1816,6 +2027,7 @@ Esse método permite o cadastro de um conjunto no Maxys.
         "Observation": "Observação"
       }
    ]
+
 }
 ```
 
